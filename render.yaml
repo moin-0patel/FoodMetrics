@@ -1,10 +1,21 @@
 # Render Blueprint — https://render.com/docs/blueprint-spec
 # Deploys the Vite + React SPA as a static site backed by Supabase.
+#
+# IMPORTANT: this file only takes effect for a service created FROM the blueprint
+# (Render dashboard → New → Blueprint). A service created by hand ignores it, and
+# Render then guesses the runtime — which is how a Vite app ends up being built
+# with `go build`. If you see Go in the deploy log, the service was created
+# manually: delete it and create it from this blueprint instead.
 services:
   - type: web
+    # Keep this name stable: it determines the <name>.onrender.com hostname, so
+    # renaming it creates a NEW service on a new URL and orphans the old one.
     name: recipe-costing-system
     runtime: static
-    buildCommand: npm ci && npm run build
+    # --include=dev because `npm run build` runs tsc AND vite, both of which live
+    # in devDependencies. If Render sets NODE_ENV=production, a plain `npm ci`
+    # skips them and the build dies with "tsc: not found".
+    buildCommand: npm ci --include=dev && npm run build
     staticPublishPath: ./dist
     # Vite reads VITE_* at BUILD time — set these in the Render dashboard
     # (Environment) before the first deploy, or sync: false will prompt for them.

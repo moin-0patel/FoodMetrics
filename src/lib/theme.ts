@@ -15,8 +15,11 @@ interface ThemeState {
 export const useTheme = create<ThemeState>()(
   persist(
     (set, get) => ({
-      theme: "light",
-      dark: false,
+      // Dark is the default: the product is designed dark-first. Light remains
+      // fully supported behind the header toggle, and anyone who has already
+      // chosen a theme keeps it — `persist` only uses this for a fresh visitor.
+      theme: "dark",
+      dark: true,
       setTheme: (theme) => set({ theme, dark: theme === "dark" }),
       toggle: () => {
         const next: Theme = get().theme === "dark" ? "light" : "dark";
@@ -26,12 +29,14 @@ export const useTheme = create<ThemeState>()(
     {
       name: "rcms.theme",
       version: 2,
-      // Migrate older shapes: boolean `{dark}` and the older 4-theme enum (→ light).
+      // Migrate older shapes: boolean `{dark}` and the older 4-theme enum. An
+      // explicit stored "light" is respected — only an absent/unreadable value
+      // falls through to the dark default.
       migrate: (persisted: unknown) => {
         const p = persisted as { dark?: boolean; theme?: string } | undefined;
-        if (!p) return { theme: "light", dark: false } as ThemeState;
-        if (p.theme === "dark" || p.dark === true) return { theme: "dark", dark: true } as ThemeState;
-        return { theme: "light", dark: false } as ThemeState;
+        if (!p) return { theme: "dark", dark: true } as ThemeState;
+        if (p.theme === "light" || p.dark === false) return { theme: "light", dark: false } as ThemeState;
+        return { theme: "dark", dark: true } as ThemeState;
       },
     },
   ),

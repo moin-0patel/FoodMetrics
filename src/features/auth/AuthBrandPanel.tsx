@@ -1,9 +1,14 @@
 import { Calculator, Percent, Trash2, BarChart3 } from "lucide-react";
 import { Logo } from "@/components/brand/Logo";
 
-// The premium left-hand brand panel shown on the auth pages (desktop only).
-// Brand-blue gradient, Food Metrics logo, product statement and a small set of
-// capability chips (no fabricated metrics, no customer names).
+// The left-hand brand panel on the auth pages (desktop only): a photograph under
+// a dark scrim, the logo, the product statement and four capability cards.
+//
+// The photo is one of the demo images (Wikimedia Commons, CC — see
+// public/demo/photos/CREDITS.md). Swap PANEL_PHOTO for your own and the credit
+// obligation goes away. If the file is missing the scrim alone still renders, so
+// the panel degrades to a plain dark surface rather than breaking.
+const PANEL_PHOTO = "/demo/photos/butter-chicken.jpg";
 
 const CAPABILITIES = [
   { icon: Calculator, label: "Recipe Costing" },
@@ -14,27 +19,25 @@ const CAPABILITIES = [
 
 export function AuthBrandPanel() {
   return (
-    <div className="relative hidden overflow-hidden bg-[#152c8f] lg:flex lg:flex-col lg:justify-between lg:p-12 xl:p-16">
-      {/* Depth: soft tinted glows over the blue base. */}
-      <div
+    <div className="relative hidden overflow-hidden bg-slate-950 lg:flex lg:flex-col lg:justify-between lg:p-12 xl:p-16">
+      {/* Photograph */}
+      <img
+        src={PANEL_PHOTO}
+        alt=""
         aria-hidden="true"
-        className="pointer-events-none absolute inset-0 opacity-90"
-        style={{
-          background:
-            "radial-gradient(60% 55% at 15% 10%, rgba(255,255,255,0.16), transparent 60%)," +
-            "radial-gradient(45% 45% at 100% 30%, rgba(237,28,36,0.28), transparent 60%)," +
-            "radial-gradient(45% 45% at 85% 100%, rgba(245,193,7,0.22), transparent 60%)",
-        }}
+        className="pointer-events-none absolute inset-0 h-full w-full object-cover"
+        onError={(e) => (e.currentTarget.style.display = "none")}
       />
-      {/* Fine grid texture (kitchen/analytics feel), very subtle. */}
+      {/* Scrim: heavy enough that the headline and cards stay legible over any
+          photo, and dark enough to match the app's dark theme. */}
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-0 opacity-[0.06]"
-        style={{
-          backgroundImage:
-            "linear-gradient(to right, #fff 1px, transparent 1px), linear-gradient(to bottom, #fff 1px, transparent 1px)",
-          backgroundSize: "32px 32px",
-        }}
+        className="pointer-events-none absolute inset-0 bg-gradient-to-br from-slate-950/95 via-slate-950/88 to-slate-900/80"
+      />
+      {/* A touch of the brand accent, bottom-left. */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute -bottom-24 -left-24 h-80 w-80 rounded-full bg-primary/20 blur-3xl"
       />
 
       <div className="relative">
@@ -45,11 +48,11 @@ export function AuthBrandPanel() {
         <h1 className="text-4xl font-semibold leading-tight tracking-tight text-white xl:text-5xl">
           Precision Recipes.
           <br />
-          Smarter Costs.
+          <span className="text-primary">Smarter Costs.</span>
           <br />
           Stronger Kitchens.
         </h1>
-        <p className="mt-5 text-base leading-relaxed text-white/70">
+        <p className="mt-5 text-base leading-relaxed text-slate-300">
           The recipe costing, yield and wastage platform — one place to standardise
           recipes and control food cost across every brand and outlet.
         </p>
@@ -58,20 +61,20 @@ export function AuthBrandPanel() {
           {CAPABILITIES.map(({ icon: Icon, label }) => (
             <li
               key={label}
-              className="flex items-center gap-2.5 rounded-lg bg-white/10 px-3 py-2.5 text-sm font-medium text-white ring-1 ring-inset ring-white/15"
+              className="flex items-center gap-2.5 rounded-lg bg-white/[0.07] px-3 py-2.5 text-sm font-medium text-white backdrop-blur-sm ring-1 ring-inset ring-white/10"
             >
-              <Icon className="h-4 w-4 shrink-0 text-white/80" />
+              <Icon className="h-4 w-4 shrink-0 text-primary" />
               {label}
             </li>
           ))}
         </ul>
       </div>
 
-      <div className="relative flex items-center gap-3 text-sm font-medium text-white/70">
+      <div className="relative flex items-center gap-3 text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-400">
         <span>Multi-brand</span>
-        <span className="text-white/30">•</span>
+        <span className="text-primary">•</span>
         <span>Multi-outlet</span>
-        <span className="text-white/30">•</span>
+        <span className="text-primary">•</span>
         <span>Real-time costing</span>
       </div>
     </div>

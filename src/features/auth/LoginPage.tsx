@@ -58,9 +58,11 @@ export function LoginPage() {
     <div className="grid min-h-[100dvh] lg:grid-cols-2">
       <AuthBrandPanel />
 
-      {/* Right: the login card. Full width on mobile/tablet, right column on desktop. */}
+      {/* Right: the login card. Full width on mobile/tablet, right column on desktop.
+          The form sits on an elevated surface so it reads as a panel against the
+          page rather than floating on the background. */}
       <main className="flex min-h-[100dvh] flex-col items-center justify-center bg-background px-5 py-10 sm:px-8">
-        <div className="w-full max-w-sm">
+        <div className="w-full max-w-sm rounded-2xl border bg-card p-6 shadow-xl sm:p-8">
           {/* Compact logo — the primary brand cue on small screens where the panel is hidden. */}
           <div className="mb-8 flex justify-center lg:hidden">
             <Logo size="lg" withSubtitle />
@@ -140,7 +142,11 @@ export function LoginPage() {
               </div>
             )}
 
-            <Button type="submit" className="h-10 w-full text-sm" disabled={isSubmitting}>
+            <Button
+              type="submit"
+              className="h-11 w-full text-sm font-semibold uppercase tracking-wide"
+              disabled={isSubmitting}
+            >
               {isSubmitting && <Loader2 className="h-4 w-4 animate-spin" />}
               {isSubmitting ? "Signing in…" : "Sign in"}
             </Button>
@@ -156,11 +162,11 @@ export function LoginPage() {
             </p>
           )}
 
-          <p className="mt-8 text-center text-xs text-muted-foreground">
+          <p className="mt-8 text-center text-[10px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">
             Authorized users only.
           </p>
           {/* Name only here — the full credit with contact lives in the public footer. */}
-          <p className="mt-2 text-center text-[11px] text-muted-foreground/70">
+          <p className="mt-1.5 text-center text-[10px] font-semibold uppercase tracking-[0.14em] text-muted-foreground/60">
             Developed by Moin Patel
           </p>
         </div>

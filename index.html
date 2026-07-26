@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon-180x180.png" />
+    <!-- manifest link is injected by vite-plugin-pwa at build. -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#04090b" />
+    <!-- iOS "Add to Home Screen": launch full-screen (not in Safari chrome) with
+         the right home-screen title/status bar. Icon comes from apple-touch-icon. -->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-title" content="Food Metrics" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta property="og:site_name" content="Food Metrics" />
+    <title>Food Metrics — Recipe Costing &amp; Operations</title>
+    <meta
+      name="description"
+      content="Food Metrics is the recipe costing, yield and wastage platform. Standardise recipes and control food cost across every brand and outlet."
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Food Metrics — Recipe Costing" />
+    <meta
+      property="og:description"
+      content="Recipe costing, yield and wastage management with brand and outlet-level cost visibility."
+    />
+    <!-- Dark brand bg from the very first paint, so there's never a white flash
+         between the native splash and the app rendering. -->
+    <style>
+      html, body { margin: 0; background: #04090b; }
+      #cc-boot {
+        position: fixed; inset: 0; z-index: 9999;
+        display: flex; align-items: center; justify-content: center;
+        background: #04090b;
+      }
+      #cc-boot img { width: 380px; max-width: 82vw; height: auto; }
+    </style>
+  </head>
+  <body>
+    <!-- Boot splash: the Food Metrics logo on the dark bg, shown until the app mounts
+         (React replaces #root's contents). No white background at any point. -->
+    <div id="root">
+      <div id="cc-boot"><img src="/brand/logo.png" alt="Food Metrics" /></div>
+    </div>
+    <script>
+      // The boot splash + dark bg are for the INSTALLED app only. In a normal
+      // browser tab, drop them so the marketing landing loads without a dark flash.
+      (function () {
+        try {
+          var app =
+            /[?&]app=1/.test(location.search) ||
+            (window.matchMedia && matchMedia("(display-mode: standalone)").matches) ||
+            window.navigator.standalone === true ||
+            localStorage.getItem("cc_app_mode") === "1" ||
+            (document.referrer || "").indexOf("android-app://") === 0;
+          if (!app) {
+            var b = document.getElementById("cc-boot");
+            if (b) b.remove();
+            document.documentElement.style.background = "";
+            document.body.style.background = "";
+          } else {
+            // Installed app: always render the MOBILE layout, never the desktop
+            // one. The app's responsive breakpoints are viewport-width based, so
+            // on large screens (tablet, foldable, landscape, desktop PWA) we cap
+            // the CSS viewport to a phone width — every md:/lg: layout then falls
+            // back to its mobile form and scales up to fill the screen. Real
+            // phones are already < 640 (mobile), so we leave them at device-width
+            // (pixel-perfect, no zoom).
+            var applyAppViewport = function () {
+              var vp = document.querySelector('meta[name="viewport"]');
+              if (!vp) return;
+              var shortSide = Math.min(screen.width || 9999, screen.height || 9999);
+              var isPhone = shortSide <= 540;
+              vp.setAttribute(
+                "content",
+                isPhone
+                  ? "width=device-width, initial-scale=1, viewport-fit=cover"
+                  : "width=430, viewport-fit=cover"
+              );
+            };
+            applyAppViewport();
+            window.addEventListener("orientationchange", applyAppViewport);
+          }
+        } catch (e) {}
+      })();
+    </script>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

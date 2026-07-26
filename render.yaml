@@ -1,0 +1,33 @@
+# Render Blueprint — https://render.com/docs/blueprint-spec
+# Deploys the Vite + React SPA as a static site backed by Supabase.
+services:
+  - type: web
+    name: recipe-costing-system
+    runtime: static
+    buildCommand: npm ci && npm run build
+    staticPublishPath: ./dist
+    # Vite reads VITE_* at BUILD time — set these in the Render dashboard
+    # (Environment) before the first deploy, or sync: false will prompt for them.
+    envVars:
+      # Supabase — authentication + data layer. Vite inlines them at BUILD time,
+      # so set them before the first deploy. Without them the app runs on the
+      # local mock layer.
+      - key: VITE_SUPABASE_URL
+        sync: false
+      - key: VITE_SUPABASE_ANON_KEY
+        sync: false
+      # Data now follows auth (see src/lib/supabase/client.ts): when the two
+      # VITE_SUPABASE_* vars are set, the app uses the shared Supabase data layer
+      # and is multi-user. This var is optional — set it to "mock" only to force
+      # the local/localStorage layer.
+      - key: VITE_DATA_BACKEND
+        value: supabase
+    # SPA fallback so React Router deep links resolve to index.html.
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
+    headers:
+      - path: /assets/*
+        name: Cache-Control
+        value: public, max-age=31536000, immutable

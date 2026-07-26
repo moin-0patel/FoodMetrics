@@ -1,0 +1,35 @@
+node_modules
+dist
+dist-ssr
+*.local
+.env
+.env.*
+!.env.example
+.DS_Store
+playwright-report
+test-results
+coverage
+
+# Large source spreadsheets / PDFs used for one-off imports (never needed at build)
+assets/*.pdf
+assets/*.xlsx
+assets/*.xls
+
+# Commercially sensitive source data — the real recipe book and supplier pricing.
+# Kept OUT of the repo: it is business data, not code, and git history is forever.
+# To publish it deliberately: git add -f "<file>"
+/*.xlsx
+/*.xls
+
+# Adobe Illustrator brand-source art (large binaries — never commit)
+*.ai
+assets/*.ai
+
+# Supabase CLI local link state
+supabase/.temp/
+
+# Android TWA signing key + PWABuilder secrets — NEVER commit
+signing.keystore
+*.keystore
+*.jks
+signing-key-info.txt

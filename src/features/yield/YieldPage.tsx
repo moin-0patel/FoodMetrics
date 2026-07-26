@@ -1,0 +1,612 @@
+import { useEffect, useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import {
+  ArrowDown,
+  ArrowUp,
+  ArrowUpDown,
+  MoreVertical,
+  Plus,
+  Sprout,
+  Trash2,
+  ChefHat,
+} from "lucide-react";
+import { PageHeader } from "@/components/PageHeader";
+import { StatTile } from "@/components/StatTile";
+import { EmptyState } from "@/components/EmptyState";
+import { TableSkeleton } from "@/components/TableSkeleton";
+import { Pagination } from "@/components/Pagination";
+import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Checkbox } from "@/components/ui/checkbox";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { ConfirmDialog } from "@/components/ConfirmDialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { formatINR, formatDate } from "@/lib/utils";
+import { useSession } from "@/lib/auth/session";
+import { can } from "@/lib/auth/permissions";
+import type { IngredientYield, RawMaterial } from "@/lib/data/types";
+import { useMaterials } from "@/features/raw-materials/hooks";
+import { useRecipes } from "@/features/recipes/hooks";
+import { useAllRecipeIngredients } from "@/features/reports/hooks";
+import { useYields, useDeleteYield, useBulkDeleteYield } from "./hooks";
+import { useUsersMap } from "@/features/users/hooks";
+import { YieldForm } from "./YieldForm";
+import { YieldBreakdownDialog } from "./YieldBreakdownDialog";
+import { toast } from "@/components/ui/use-toast";
+
+const PAGE_SIZE = 10;
+type SortKey = "name" | "wastage" | "yield" | "cost";
+
+export function YieldPage() {
+  const user = useSession((s) => s.user)!;
+  const navigate = useNavigate();
+  const canEdit = can(user.role, "yield.manage");
+  const { data: yields = [], isLoading } = useYields();
+  const { data: materials = [] } = useMaterials();
+  const { data: recipes = [] } = useRecipes();
+  const { data: recipeIngredients = [] } = useAllRecipeIngredients();
+  const deleteMut = useDeleteYield();
+  const bulkDelMut = useBulkDeleteYield();
+
+  const matById = useMemo(() => new Map(materials.map((m) => [m.id, m])), [materials]);
+  const categories = useMemo(
+    () => [...new Set(materials.map((m) => m.category))].sort(),
+    [materials],
+  );
+
+  // Recipes that use a given ingredient (§6 "View recipes using ingredient").
+  const recipesUsing = useMemo(() => {
+    const recById = new Map(recipes.map((r) => [r.id, r]));
+    const map = new Map<string, { id: string; name: string }[]>();
+    for (const ri of recipeIngredients) {
+      if (ri.component_type === "recipe") continue;
+      const r = recById.get(ri.recipe_id);
+      if (!r) continue;
+      const list = map.get(ri.ingredient_id) ?? [];
+      if (!list.some((x) => x.id === r.id)) list.push({ id: r.id, name: r.recipe_name });
+      map.set(ri.ingredient_id, list);
+    }
+    return map;
+  }, [recipeIngredients, recipes]);
+
+  const { map: usersMap } = useUsersMap();
+  const [search, setSearch] = useState("");
+  const [category, setCategory] = useState("all");
+  const [wastageBand, setWastageBand] = useState("all");
+  const [yieldBand, setYieldBand] = useState("all");
+  const [sort, setSort] = useState<{ key: SortKey; dir: "asc" | "desc" }>({ key: "name", dir: "asc" });
+  const [page, setPage] = useState(1);
+
+  const [formOpen, setFormOpen] = useState(false);
+  const [editing, setEditing] = useState<IngredientYield | null>(null);
+  const [showMissing, setShowMissing] = useState(false);
+  const [breakdownFor, setBreakdownFor] = useState<IngredientYield | null>(null);
+  const [deleting, setDeleting] = useState<IngredientYield | null>(null);
+  const [recipesForYield, setRecipesForYield] = useState<(IngredientYield & { material: RawMaterial | null }) | null>(null);
+  const [selected, setSelected] = useState<Set<string>>(new Set());
+  const [bulkDeleteOpen, setBulkDeleteOpen] = useState(false);
+
+  type Row = IngredientYield & { material: RawMaterial | null };
+  const rows = useMemo<Row[]>(
+    () => yields.map((y) => ({ ...y, material: matById.get(y.ingredient_id) ?? null })),
+    [yields, matById],
+  );
+
+  // Extraction readings across every yield record. Averages stay null when there
+  // are no records, so the tiles render "—" instead of a misleading 0%.
+  const yieldStats = useMemo(() => {
+    if (rows.length === 0) {
+      return { avgYield: null, avgWastage: null, worst: null, highLoss: 0, count: 0 };
+    }
+    const avg = (xs: number[]) => xs.reduce((a, b) => a + b, 0) / xs.length;
+    const worst = rows.reduce((a, b) => (b.wastage_percentage > a.wastage_percentage ? b : a));
+    return {
+      avgYield: avg(rows.map((r) => r.yield_percentage)),
+      avgWastage: avg(rows.map((r) => r.wastage_percentage)),
+      worst: {
+        name: worst.material?.ingredient_name ?? worst.name ?? "Unnamed",
+        pct: worst.wastage_percentage,
+      },
+      highLoss: rows.filter((r) => r.wastage_percentage > 25).length,
+      count: rows.length,
+    };
+  }, [rows]);
+
+  // Yields are COMMON across brands (shared with raw materials) — not brand-filtered.
+  const filtered = useMemo(() => {
+    const out = rows.filter((r) => {
+      if (search) {
+        const q = search.toLowerCase();
+        const yn = (r.name || `${r.material?.ingredient_name ?? ""} Yield`).toLowerCase();
+        const ing = (r.material?.ingredient_name ?? "").toLowerCase();
+        const by = (r.created_by ? usersMap.get(r.created_by)?.name ?? "" : "").toLowerCase();
+        if (!yn.includes(q) && !ing.includes(q) && !by.includes(q)) return false;
+      }
+      if (category !== "all" && r.material?.category !== category) return false;
+      if (wastageBand === "low" && r.wastage_percentage >= 10) return false;
+      if (wastageBand === "med" && (r.wastage_percentage < 10 || r.wastage_percentage > 25)) return false;
+      if (wastageBand === "high" && r.wastage_percentage <= 25) return false;
+      if (yieldBand === "high" && r.yield_percentage < 90) return false;
+      if (yieldBand === "med" && (r.yield_percentage < 75 || r.yield_percentage >= 90)) return false;
+      if (yieldBand === "low" && r.yield_percentage >= 75) return false;
+      return true;
+    });
+    out.sort((a, b) => {
+      let cmp = 0;
+      if (sort.key === "name")
+        cmp = (a.material?.ingredient_name ?? "").localeCompare(b.material?.ingredient_name ?? "");
+      else if (sort.key === "wastage") cmp = a.wastage_percentage - b.wastage_percentage;
+      else if (sort.key === "yield") cmp = a.yield_percentage - b.yield_percentage;
+      else if (sort.key === "cost") cmp = a.yield_adjusted_unit_cost - b.yield_adjusted_unit_cost;
+      return sort.dir === "asc" ? cmp : -cmp;
+    });
+    return out;
+  }, [rows, search, category, wastageBand, yieldBand, sort, usersMap]);
+
+  const pageCount = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
+  const current = Math.min(page, pageCount);
+  const pageItems = filtered.slice((current - 1) * PAGE_SIZE, current * PAGE_SIZE);
+
+  // Multi-select (like Raw Materials): clear when the visible set changes.
+  useEffect(() => {
+    setSelected(new Set());
+  }, [search, category, wastageBand, yieldBand, sort]);
+
+  const pageIds = pageItems.map((r) => r.id);
+  const allPageSelected = pageIds.length > 0 && pageIds.every((id) => selected.has(id));
+  const toggleOne = (id: string) =>
+    setSelected((prev) => {
+      const n = new Set(prev);
+      if (n.has(id)) n.delete(id);
+      else n.add(id);
+      return n;
+    });
+  const toggleAllPage = () =>
+    setSelected((prev) => {
+      const n = new Set(prev);
+      if (allPageSelected) pageIds.forEach((id) => n.delete(id));
+      else pageIds.forEach((id) => n.add(id));
+      return n;
+    });
+  const runBulkDelete = async () => {
+    const ids = [...selected];
+    try {
+      const n = await bulkDelMut.mutateAsync(ids);
+      setSelected(new Set());
+      toast.success(`Deleted ${n} yield record${n === 1 ? "" : "s"}`);
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "Bulk delete failed");
+    }
+  };
+
+  // Summary stats
+  const stats = useMemo(() => {
+    const n = yields.length;
+    const avgYield = n ? yields.reduce((s, y) => s + y.yield_percentage, 0) / n : 0;
+    const avgWastage = n ? yields.reduce((s, y) => s + y.wastage_percentage, 0) / n : 0;
+    // Estimated wastage cost = wastage_quantity × original cost per base unit, summed.
+    const wastageCost = yields.reduce((s, y) => s + y.wastage_quantity * y.original_unit_cost, 0);
+    // A yield can be created before its purchase price is known. Flag only those
+    // (NOT every raw material that lacks a yield — that was ~795 rows of noise).
+    const missingItems = yields.filter((y) => {
+      const m = matById.get(y.ingredient_id);
+      return (y.purchase_cost ?? 0) <= 0 || m == null || m.cost_per_base_unit == null;
+    });
+    return { n, avgYield, avgWastage, wastageCost, missing: missingItems.length, missingItems };
+  }, [yields, matById]);
+
+  const toggleSort = (key: SortKey) =>
+    setSort((s) => (s.key === key ? { key, dir: s.dir === "asc" ? "desc" : "asc" } : { key, dir: "desc" }));
+
+  const SortHead = ({ label, k, className }: { label: string; k: SortKey; className?: string }) => {
+    const active = sort.key === k;
+    return (
+      <TableHead className={className} aria-sort={active ? (sort.dir === "asc" ? "ascending" : "descending") : "none"}>
+        <button
+          className="inline-flex items-center gap-1 rounded hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          onClick={() => toggleSort(k)}
+          aria-label={`Sort by ${label}`}
+        >
+          {label}
+          {active ? (
+            sort.dir === "asc" ? <ArrowUp className="h-3.5 w-3.5" /> : <ArrowDown className="h-3.5 w-3.5" />
+          ) : (
+            <ArrowUpDown className="h-3.5 w-3.5 opacity-40" />
+          )}
+        </button>
+      </TableHead>
+    );
+  };
+
+  const openAdd = () => {
+    setEditing(null);
+    setFormOpen(true);
+  };
+
+  return (
+    <>
+      <PageHeader
+        eyebrow="Extraction Analysis"
+        title="Yield Intelligence"
+        description="Effective ingredient cost after cleaning, peeling, trimming and processing loss."
+        actions={
+          canEdit && (
+            <div className="flex items-center gap-2">
+              <Button variant="accent" onClick={openAdd}>
+                <Plus className="h-4 w-4" /> Add Yield
+              </Button>
+            </div>
+          )
+        }
+      />
+
+      {/* Summary cards — derived from the recorded yield rows. */}
+      <div className="mb-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
+        <StatTile
+          label="Average Yield %"
+          value={stats.n === 0 ? "—" : `${stats.avgYield.toFixed(1)}%`}
+          valueTone={stats.n === 0 ? "neutral" : stats.avgYield >= 85 ? "good" : stats.avgYield >= 70 ? "warning" : "bad"}
+          progress={stats.n === 0 ? null : stats.avgYield}
+          tone={stats.avgYield >= 85 ? "good" : stats.avgYield >= 70 ? "warning" : "bad"}
+          emptyHint={stats.n === 0 ? "No yield records yet" : `Across ${stats.n} ingredient${stats.n === 1 ? "" : "s"}`}
+        />
+        <StatTile
+          label="Average Wastage %"
+          value={stats.n === 0 ? "—" : `${stats.avgWastage.toFixed(1)}%`}
+          valueTone={stats.n === 0 ? "neutral" : stats.avgWastage > 25 ? "bad" : "neutral"}
+          emptyHint={stats.n === 0 ? "Needs yield records" : "Trim and processing loss"}
+        />
+        <StatTile
+          label="Est. Wastage Cost"
+          value={stats.n === 0 ? "—" : formatINR(stats.wastageCost)}
+          valueTone={stats.wastageCost > 0 ? "bad" : "neutral"}
+          emptyHint={stats.n === 0 ? "Needs priced ingredients" : "Value lost to trim"}
+        />
+        <StatTile
+          label="Top Loss Component"
+          value={yieldStats.worst ? yieldStats.worst.name : "—"}
+          subValue={yieldStats.worst ? `${yieldStats.worst.pct.toFixed(1)}% wastage` : undefined}
+          valueTone={yieldStats.worst ? "bad" : "neutral"}
+          emptyHint={yieldStats.worst ? undefined : "No yield records yet"}
+        />
+        {/* Clickable: opens the missing-price list. Kept as a button so the tile
+            keeps its keyboard affordance. */}
+        <button
+          type="button"
+          onClick={stats.missing > 0 ? () => setShowMissing(true) : undefined}
+          disabled={stats.missing === 0}
+          className="rounded-lg text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-default"
+        >
+          <StatTile
+            label="Yields Missing Price"
+            value={String(stats.missing)}
+            valueTone={stats.missing > 0 ? "warning" : "good"}
+            emptyHint={stats.missing > 0 ? "Tap to review — these cannot be costed" : "Every yield has a price"}
+            className="h-full"
+          />
+        </button>
+      </div>
+
+      {/* Filters */}
+      <Card className="mb-4 p-4">
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
+          <Input placeholder="Search name, ingredient, created by…" value={search} onChange={(e) => { setSearch(e.target.value); setPage(1); }} />
+          <Select value={category} onValueChange={(v) => { setCategory(v); setPage(1); }}>
+            <SelectTrigger><SelectValue placeholder="Category" /></SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Categories</SelectItem>
+              {categories.map((c) => <SelectItem key={c} value={c}>{c}</SelectItem>)}
+            </SelectContent>
+          </Select>
+          <Select value={wastageBand} onValueChange={(v) => { setWastageBand(v); setPage(1); }}>
+            <SelectTrigger><SelectValue placeholder="Wastage" /></SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">Any Wastage</SelectItem>
+              <SelectItem value="low">Low (&lt; 10%)</SelectItem>
+              <SelectItem value="med">Medium (10–25%)</SelectItem>
+              <SelectItem value="high">High (&gt; 25%)</SelectItem>
+            </SelectContent>
+          </Select>
+          <Select value={yieldBand} onValueChange={(v) => { setYieldBand(v); setPage(1); }}>
+            <SelectTrigger><SelectValue placeholder="Yield" /></SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">Any Yield</SelectItem>
+              <SelectItem value="high">High (≥ 90%)</SelectItem>
+              <SelectItem value="med">Medium (75–90%)</SelectItem>
+              <SelectItem value="low">Low (&lt; 75%)</SelectItem>
+            </SelectContent>
+          </Select>
+          <Select
+            value={`${sort.key}:${sort.dir}`}
+            onValueChange={(v) => {
+              const [key, dir] = v.split(":") as [SortKey, "asc" | "desc"];
+              setSort({ key, dir });
+              setPage(1);
+            }}
+          >
+            <SelectTrigger><SelectValue placeholder="Sort" /></SelectTrigger>
+            <SelectContent>
+              <SelectItem value="name:asc">Name (A–Z)</SelectItem>
+              <SelectItem value="wastage:desc">Highest wastage</SelectItem>
+              <SelectItem value="yield:asc">Lowest yield</SelectItem>
+              <SelectItem value="cost:desc">Highest effective cost</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+      </Card>
+
+      {/* Bulk action bar */}
+      {canEdit && selected.size > 0 && (
+        <div className="mb-3 flex flex-wrap items-center gap-2 rounded-lg border bg-muted/50 px-4 py-2.5 text-sm">
+          <span className="font-medium">{selected.size} selected</span>
+          <div className="flex-1" />
+          <Button variant="destructive" size="sm" onClick={() => setBulkDeleteOpen(true)}>
+            <Trash2 className="h-4 w-4" /> Delete
+          </Button>
+          <Button variant="ghost" size="sm" onClick={() => setSelected(new Set())}>
+            Clear
+          </Button>
+        </div>
+      )}
+
+      <Card>
+        {isLoading ? (
+          <TableSkeleton rows={6} cols={6} />
+        ) : filtered.length === 0 ? (
+          <EmptyState
+            icon={<Sprout className="h-7 w-7" />}
+            title="No yield data has been added yet"
+            description="Add yield information to calculate the effective usable ingredient cost."
+            action={canEdit && <Button variant="accent" onClick={openAdd}><Plus className="h-4 w-4" /> Add Yield</Button>}
+          />
+        ) : (
+          <>
+            <div className="hidden md:block">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    {canEdit && (
+                      <TableHead className="w-10">
+                        <Checkbox checked={allPageSelected} onCheckedChange={toggleAllPage} aria-label="Select all on page" />
+                      </TableHead>
+                    )}
+                    <SortHead label="Yield Name" k="name" />
+                    <TableHead>Category</TableHead>
+                    <SortHead label="Wastage %" k="wastage" className="text-right" />
+                    <SortHead label="Yield %" k="yield" className="text-right" />
+                    <TableHead className="text-right">Original Cost</TableHead>
+                    <SortHead label="Yield-Adjusted" k="cost" className="text-right" />
+                    <TableHead>Created By</TableHead>
+                    <TableHead>Updated</TableHead>
+                    <TableHead className="w-10" />
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {pageItems.map((r) => (
+                    <TableRow key={r.id} className="cursor-pointer" data-state={selected.has(r.id) ? "selected" : undefined} onClick={() => setBreakdownFor(r)}>
+                      {canEdit && (
+                        <TableCell onClick={(e) => e.stopPropagation()}>
+                          <Checkbox checked={selected.has(r.id)} onCheckedChange={() => toggleOne(r.id)} aria-label={`Select ${r.material?.ingredient_name ?? "yield"}`} />
+                        </TableCell>
+                      )}
+                      <TableCell className="font-medium">
+                        {r.name || `${r.material?.ingredient_name ?? "—"} Yield`}
+                        {r.name && r.material?.ingredient_name && (
+                          <span className="block text-xs font-normal text-muted-foreground">{r.material.ingredient_name}</span>
+                        )}
+                      </TableCell>
+                      <TableCell className="text-muted-foreground">{r.material?.category ?? "—"}</TableCell>
+                      <TableCell className="text-right font-mono">{r.wastage_percentage}%</TableCell>
+                      <TableCell className="text-right font-mono">{r.yield_percentage}%</TableCell>
+                      <TableCell className="text-right font-mono text-muted-foreground">{formatINR(r.original_unit_cost * 1000)}/kg</TableCell>
+                      <TableCell className="text-right font-mono font-semibold">{formatINR(r.yield_adjusted_unit_cost * 1000)}/kg</TableCell>
+                      <TableCell className="text-xs text-muted-foreground">{r.created_by ? usersMap.get(r.created_by)?.name ?? "—" : "—"}</TableCell>
+                      <TableCell className="text-xs text-muted-foreground">{formatDate(r.updated_at)}</TableCell>
+                      <TableCell onClick={(e) => e.stopPropagation()}>
+                        <RowActions
+                          y={r}
+                          canEdit={canEdit}
+                          onEdit={() => { setEditing(r); setFormOpen(true); }}
+                          onBreakdown={() => setBreakdownFor(r)}
+                          onRecipes={() => setRecipesForYield(r)}
+                          onDelete={() => setDeleting(r)}
+                        />
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+
+            {/* Mobile cards */}
+            <ul className="divide-y md:hidden">
+              {pageItems.map((r) => (
+                <li key={r.id} className="flex items-start gap-3 p-4">
+                  {canEdit && (
+                    <Checkbox checked={selected.has(r.id)} onCheckedChange={() => toggleOne(r.id)} className="mt-1" aria-label={`Select ${r.material?.ingredient_name ?? "yield"}`} />
+                  )}
+                  <button className="min-w-0 flex-1 text-left" onClick={() => setBreakdownFor(r)}>
+                    <p className="truncate font-medium">{r.name || `${r.material?.ingredient_name ?? "—"} Yield`}</p>
+                    <p className="text-xs text-muted-foreground">{r.material?.ingredient_name ?? r.material?.category}</p>
+                    <p className="mt-1 text-sm">
+                      Yield <span className="font-semibold">{r.yield_percentage}%</span> · {formatINR(r.yield_adjusted_unit_cost * 1000)}/kg
+                    </p>
+                  </button>
+                  <RowActions
+                    y={r}
+                    canEdit={canEdit}
+                    onEdit={() => { setEditing(r); setFormOpen(true); }}
+                    onBreakdown={() => setBreakdownFor(r)}
+                    onRecipes={() => setRecipesForYield(r)}
+                    onDelete={() => setDeleting(r)}
+                  />
+                </li>
+              ))}
+            </ul>
+
+            <Pagination page={current} pageSize={PAGE_SIZE} total={filtered.length} onPageChange={setPage} label="ingredients" />
+          </>
+        )}
+      </Card>
+
+      <YieldForm open={formOpen} onOpenChange={setFormOpen} record={editing} />
+
+      {/* Drill-in: the yields counted as "Missing Price" */}
+      <Dialog open={showMissing} onOpenChange={setShowMissing}>
+        <DialogContent className="max-h-[80vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Yields missing a price — {stats.missing}</DialogTitle>
+            <DialogDescription>
+              A yield exists but its ingredient has no purchase price. Tap one to add the price.
+            </DialogDescription>
+          </DialogHeader>
+          <ul className="divide-y">
+            {stats.missingItems.map((y) => (
+              <li key={y.id}>
+                <button
+                  type="button"
+                  onClick={() => { setShowMissing(false); setEditing(y); setFormOpen(true); }}
+                  className="flex w-full items-center justify-between gap-3 py-2 text-left text-sm hover:text-emerald-700"
+                >
+                  <span className="font-medium">{matById.get(y.ingredient_id)?.ingredient_name ?? "—"}</span>
+                  <span className="shrink-0 text-xs text-muted-foreground">yield {y.yield_percentage}%</span>
+                </button>
+              </li>
+            ))}
+          </ul>
+        </DialogContent>
+      </Dialog>
+      <YieldBreakdownDialog
+        record={breakdownFor}
+        material={breakdownFor ? matById.get(breakdownFor.ingredient_id) ?? null : null}
+        open={!!breakdownFor}
+        onOpenChange={(o) => !o && setBreakdownFor(null)}
+      />
+      <ConfirmDialog
+        open={!!deleting}
+        onOpenChange={(o) => !o && setDeleting(null)}
+        title="Delete yield record?"
+        description={`Yield data for "${(deleting && matById.get(deleting.ingredient_id)?.ingredient_name) ?? "this ingredient"}" will be removed. Recipes will fall back to the standard purchase cost.`}
+        confirmLabel="Delete"
+        destructive
+        onConfirm={async () => {
+          if (!deleting) return;
+          try {
+            await deleteMut.mutateAsync(deleting.id);
+            toast.success("Yield record deleted");
+          } catch (e) {
+            toast.error(e instanceof Error ? e.message : "Delete failed");
+          }
+        }}
+      />
+
+      <ConfirmDialog
+        open={bulkDeleteOpen}
+        onOpenChange={setBulkDeleteOpen}
+        title={`Delete ${selected.size} yield record${selected.size === 1 ? "" : "s"}?`}
+        description="The selected yield records will be removed. Recipes using them fall back to the standard purchase cost."
+        confirmLabel="Delete"
+        destructive
+        onConfirm={runBulkDelete}
+      />
+
+      <Dialog open={!!recipesForYield} onOpenChange={(o) => !o && setRecipesForYield(null)}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Recipes using {recipesForYield?.material?.ingredient_name ?? "this ingredient"}</DialogTitle>
+            <DialogDescription>
+              These recipes apply this ingredient's yield-adjusted cost. Editing the yield re-costs them all.
+            </DialogDescription>
+          </DialogHeader>
+          {(() => {
+            const list = recipesForYield ? recipesUsing.get(recipesForYield.ingredient_id) ?? [] : [];
+            if (list.length === 0) {
+              return <p className="py-4 text-sm text-muted-foreground">No recipes currently use this ingredient.</p>;
+            }
+            return (
+              <ul className="max-h-80 divide-y overflow-y-auto">
+                {list.map((r) => (
+                  <li key={r.id}>
+                    <button
+                      onClick={() => { navigate(`/recipes/${r.id}`); setRecipesForYield(null); }}
+                      className="flex w-full items-center gap-2 py-2.5 text-left text-sm hover:underline"
+                    >
+                      <ChefHat className="h-4 w-4 shrink-0 text-muted-foreground" />
+                      <span className="truncate">{r.name}</span>
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            );
+          })()}
+        </DialogContent>
+      </Dialog>
+    </>
+  );
+}
+
+
+function RowActions({
+  y,
+  canEdit,
+  onEdit,
+  onBreakdown,
+  onRecipes,
+  onDelete,
+}: {
+  y: IngredientYield & { material: RawMaterial | null };
+  canEdit: boolean;
+  onEdit: () => void;
+  onBreakdown: () => void;
+  onRecipes: () => void;
+  onDelete: () => void;
+}) {
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button variant="ghost" size="icon" aria-label={`Actions for ${y.material?.ingredient_name ?? "yield"}`}>
+          <MoreVertical className="h-4 w-4" />
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end">
+        <DropdownMenuItem onClick={onBreakdown}>View Calculation Breakdown</DropdownMenuItem>
+        <DropdownMenuItem onClick={onRecipes}>
+          <ChefHat className="h-4 w-4" /> Recipes Using This
+        </DropdownMenuItem>
+        {canEdit && <DropdownMenuItem onClick={onEdit}>Edit Yield</DropdownMenuItem>}
+        {canEdit && (
+          <DropdownMenuItem onClick={onDelete} className="text-destructive">
+            <Trash2 className="h-4 w-4" /> Delete Yield
+          </DropdownMenuItem>
+        )}
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+}

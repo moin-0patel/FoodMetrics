@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 400" width="640" height="400" role="img">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#1e1410"/><stop offset="1" stop-color="#0c0705"/>
+    </linearGradient>
+    <radialGradient id="sheen" cx="0.32" cy="0.28" r="0.7">
+      <stop offset="0" stop-color="#ffffff" stop-opacity="0.16"/>
+      <stop offset="1" stop-color="#ffffff" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="640" height="400" fill="url(#bg)"/>
+  <rect width="640" height="400" fill="url(#sheen)"/>
+  <circle cx="320" cy="205" r="150" fill="#d9c3a3" opacity="0.55"/>
+  <circle cx="320" cy="200" r="132" fill="#f1e4cf"/>
+  <circle cx="320" cy="200" r="132" fill="none" stroke="#000" stroke-opacity="0.07" stroke-width="2"/>
+  <circle cx="320" cy="202" r="98" fill="#4a2a1c"/><circle cx="320" cy="202" r="86" fill="#35190f"/><circle cx="320" cy="202" r="30" fill="#e8dcc6" opacity="0.85"/><circle cx="418.4" cy="206.8" r="6" fill="#c0472f"/><circle cx="362.9" cy="175.3" r="6" fill="#c0472f"/><circle cx="305.5" cy="146.8" r="6" fill="#c0472f"/><circle cx="342.4" cy="144.6" r="6" fill="#c0472f"/><circle cx="257.2" cy="193.7" r="6" fill="#c0472f"/><circle cx="411.7" cy="200.5" r="6" fill="#c0472f"/><circle cx="281.4" cy="160.3" r="6" fill="#c0472f"/>
+</svg>

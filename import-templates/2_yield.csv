@@ -1,0 +1,4 @@
+Ingredient,Purchase Cost,Purchase Quantity,Purchase Unit,Wastage Quantity,Effective From,Notes
+Onion,125,1,KG,200,2026-06-01,Peeling + trimming loss
+Tomato,60,1,KG,120,2026-06-01,Coring loss
+Chicken,320,1,KG,180,2026-06-01,Trim + bone loss

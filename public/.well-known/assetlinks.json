@@ -1,0 +1,16 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.onrender.recepie_costing.twa",
+      "sha256_cert_fingerprints": [
+        "9E:F8:42:45:DD:56:16:19:13:06:1B:F4:43:31:72:DE:A2:04:83:60:41:4F:EA:83:8E:1B:C3:FD:1A:67:3A:5F",
+        "8E:E1:6B:5A:14:D8:B3:C6:23:B2:9E:C5:DD:07:CF:7F:64:CC:AD:9E:11:D1:33:08:61:A0:DF:92:30:19:94:DD",
+        "B2:73:C2:96:16:BF:3D:18:32:F7:12:FF:71:17:9D:C1:A0:BB:4E:9F:F5:72:1A:AE:AA:C9:46:30:31:A4:BE:96",
+        "B6:07:35:CD:AA:61:A8:6C:52:2E:DB:67:87:3C:15:30:CC:FE:EC:88:FF:AD:A5:49:6B:A9:8F:EF:A4:40:2E:E2",
+        "EB:07:47:4A:DE:1D:10:B1:F3:D0:06:EB:9C:BD:03:5A:E1:9E:03:CB:20:4F:CD:75:DE:AB:C9:F6:3F:E2:C0:C9"
+      ]
+    }
+  }
+]

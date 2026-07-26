@@ -1,0 +1,32 @@
+Recipe Name,Category,Size,Ingredient,Quantity,Unit,Selling Price,Packaging,Image
+Margherita Pizza,Pizza,,Pizza Dough,280,Gram,520,28,/demo/photos/margherita-pizza.jpg
+Margherita Pizza,Pizza,,Pomodoro Sauce,120,Gram,520,28,/demo/photos/margherita-pizza.jpg
+Margherita Pizza,Pizza,,Mozzarella Cheese,110,Gram,520,28,/demo/photos/margherita-pizza.jpg
+Margherita Pizza,Pizza,,Fresh Basil,6,Gram,520,28,/demo/photos/margherita-pizza.jpg
+Penne Arrabbiata,Pasta,,Penne Pasta,140,Gram,460,24,/demo/photos/penne-arrabbiata.jpg
+Penne Arrabbiata,Pasta,,Arrabbiata Base,160,Gram,460,24,/demo/photos/penne-arrabbiata.jpg
+Penne Arrabbiata,Pasta,,Parmesan Cheese,20,Gram,460,24,/demo/photos/penne-arrabbiata.jpg
+Penne Arrabbiata,Pasta,,Olive Oil,15,ML,460,24,/demo/photos/penne-arrabbiata.jpg
+Butter Chicken,Mains,,Chicken Breast,220,Gram,640,32,/demo/photos/butter-chicken.jpg
+Butter Chicken,Mains,,Makhani Gravy,240,Gram,640,32,/demo/photos/butter-chicken.jpg
+Butter Chicken,Mains,,Fresh Cream,30,ML,640,32,/demo/photos/butter-chicken.jpg
+Butter Chicken,Mains,,Butter,20,Gram,640,32,/demo/photos/butter-chicken.jpg
+Dal Makhani,Mains,,Black Urad Dal,120,Gram,380,26,/demo/photos/dal-makhani.jpg
+Dal Makhani,Mains,,Rajma,30,Gram,380,26,/demo/photos/dal-makhani.jpg
+Dal Makhani,Mains,,Butter,45,Gram,380,26,/demo/photos/dal-makhani.jpg
+Dal Makhani,Mains,,Fresh Cream,40,ML,380,26,/demo/photos/dal-makhani.jpg
+Paneer Tikka,Appetizers,,Paneer,200,Gram,440,26,/demo/photos/paneer-tikka.jpg
+Paneer Tikka,Appetizers,,Tikka Marinade,90,Gram,440,26,/demo/photos/paneer-tikka.jpg
+Paneer Tikka,Appetizers,,Onion,60,Gram,440,26,/demo/photos/paneer-tikka.jpg
+Caesar Salad,Salad,,Romaine Lettuce,180,Gram,390,22,/demo/photos/caesar-salad.jpg
+Caesar Salad,Salad,,Caesar Dressing,60,Gram,390,22,/demo/photos/caesar-salad.jpg
+Caesar Salad,Salad,,Croutons,35,Gram,390,22,/demo/photos/caesar-salad.jpg
+Caesar Salad,Salad,,Parmesan Cheese,18,Gram,390,22,/demo/photos/caesar-salad.jpg
+Chocolate Tart,Dessert,,Dark Chocolate,80,Gram,320,18,/demo/photos/chocolate-tart.jpg
+Chocolate Tart,Dessert,,Butter,45,Gram,320,18,/demo/photos/chocolate-tart.jpg
+Chocolate Tart,Dessert,,Refined Flour,60,Gram,320,18,/demo/photos/chocolate-tart.jpg
+Chocolate Tart,Dessert,,Sugar,50,Gram,320,18,/demo/photos/chocolate-tart.jpg
+Chocolate Tart,Dessert,,Eggs,1,Piece,320,18,/demo/photos/chocolate-tart.jpg
+Masala Chai,Beverage,,Chai Masala Base,12,Gram,120,10,/demo/photos/masala-chai.jpg
+Masala Chai,Beverage,,Milk,150,ML,120,10,/demo/photos/masala-chai.jpg
+Masala Chai,Beverage,,Sugar,12,Gram,120,10,/demo/photos/masala-chai.jpg

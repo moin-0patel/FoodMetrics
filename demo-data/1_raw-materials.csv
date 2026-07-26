@@ -1,0 +1,39 @@
+Ingredient,Category,Material Type,Purchase Price,Notes
+Refined Flour,Grains & Flour,Weight,48,Maida — per 1 kg
+Semolina,Grains & Flour,Weight,62,
+Penne Pasta,Grains & Flour,Weight,180,
+Basmati Rice,Grains & Flour,Weight,145,
+Onion,Vegetables,Weight,38,
+Tomato,Vegetables,Weight,42,
+Garlic,Vegetables,Weight,180,
+Ginger,Vegetables,Weight,160,
+Green Chilli,Vegetables,Weight,90,
+Romaine Lettuce,Vegetables,Weight,220,
+Fresh Basil,Vegetables,Weight,700,
+Coriander,Vegetables,Weight,120,
+Mozzarella Cheese,Dairy,Weight,520,
+Parmesan Cheese,Dairy,Weight,1450,
+Paneer,Dairy,Weight,380,
+Butter,Dairy,Weight,560,
+Fresh Cream,Dairy,Liquid,320,Per 1 litre
+Milk,Dairy,Liquid,68,Per 1 litre
+Yoghurt,Dairy,Weight,110,
+Chicken Breast,Protein,Weight,320,
+Black Urad Dal,Grains & Flour,Weight,140,
+Rajma,Grains & Flour,Weight,130,
+Olive Oil,Oils & Fats,Liquid,880,Per 1 litre
+Sunflower Oil,Oils & Fats,Liquid,145,Per 1 litre
+Salt,Spices,Weight,22,
+Black Pepper,Spices,Weight,1100,
+Red Chilli Powder,Spices,Weight,320,
+Turmeric,Spices,Weight,280,
+Garam Masala,Spices,Weight,620,
+Cumin Seeds,Spices,Weight,420,
+Kasuri Methi,Spices,Weight,780,
+Tea Leaves,Beverages,Weight,480,
+Cardamom,Spices,Weight,2800,
+Sugar,Bakery,Weight,46,
+Dark Chocolate,Bakery,Weight,690,
+Eggs,Protein,Count,7,Per 1 piece
+Active Dry Yeast,Bakery,Weight,540,
+Croutons,Bakery,Weight,260,

@@ -1,0 +1,285 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* --- Responsive, sidebar-aware dashboard layout helpers ----------------------
+   The dashboard grids used viewport breakpoints (lg/xl), but the sidebar eats
+   ~240px, so on a 1366/1440 screen those breakpoints fired while the real
+   content area was far narrower — cramming 5 cards + a 2-column layout into
+   ~1050px. These helpers are CONTAINER-driven, so they adapt to the actual
+   available width regardless of monitor size, sidebar state or browser zoom. */
+
+/* Mark the main content wrapper as an inline-size container. */
+.cq-content { container-type: inline-size; }
+
+/* Summary/KPI cards: as many readable columns as fit the container width. */
+.card-autofit {
+  display: grid;
+  gap: 0.75rem;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+}
+
+/* Dashboard main area (table + side panel): stacks below ~1180px of CONTENT
+   width, side-by-side with a table-favouring ratio above it. */
+.dash-main-grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: minmax(0, 1fr);
+}
+/* Stacked: give the table a definite height so pagination can size to it. */
+.dash-table-scroll { height: 60vh; }
+@container (min-width: 1180px) {
+  /* Side-by-side: the grid is pinned to a viewport-fit height (set inline); the
+     single row fills it, so the table body + pagination and the side panel all fit
+     the screen. The table body fills above the pagination bar; the side panel
+     scrolls internally if its cards are taller than the available height. */
+  .dash-main-grid {
+    grid-template-columns: minmax(0, 2.5fr) minmax(260px, 1fr);
+    grid-template-rows: minmax(0, 1fr);
+  }
+  .dash-table-scroll { height: auto; flex: 1 1 0%; min-height: 0; }
+  .dash-side { min-height: 0; overflow-y: auto; }
+}
+
+/* Subtle entrance for public (marketing) sections. Honoured only when the user
+   allows motion — the global prefers-reduced-motion block below neutralises it. */
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.animate-fade-up {
+  animation: fade-up 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* ── Futuristic landing toolkit (light-first, brand-tinted) ────────────────
+   Additive helper classes for the marketing landing page. Motion is neutralised
+   by the global prefers-reduced-motion block further down. */
+
+/* Faint blueprint grid — brand-blue hairlines on a 44px cell. */
+.bg-grid {
+  background-image:
+    linear-gradient(to right, hsl(var(--primary) / 0.07) 1px, transparent 1px),
+    linear-gradient(to bottom, hsl(var(--primary) / 0.07) 1px, transparent 1px);
+  background-size: 44px 44px;
+}
+
+/* Fade a decorative layer out toward the edges so there's no hard seam. */
+.mask-fade-y {
+  -webkit-mask-image: radial-gradient(ellipse 75% 60% at 50% 0%, #000 35%, transparent 100%);
+  mask-image: radial-gradient(ellipse 75% 60% at 50% 0%, #000 35%, transparent 100%);
+}
+.mask-fade-b {
+  -webkit-mask-image: linear-gradient(to bottom, #000 55%, transparent 100%);
+  mask-image: linear-gradient(to bottom, #000 55%, transparent 100%);
+}
+
+/* Elegant serif display face for luxury headings (system stack — no web fonts). */
+.font-display {
+  font-family: ui-serif, "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, Cambria, "Times New Roman", serif;
+  letter-spacing: -0.012em;
+}
+
+/* Brand gradient text — refined navy → brand-blue → antique gold. */
+.text-gradient-brand {
+  background-image: linear-gradient(100deg, hsl(var(--primary)), #2dd4bf 45%, hsl(var(--foreground)));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+/* Pure gold gradient for numerals / small luxe accents. */
+.text-gold {
+  background-image: linear-gradient(100deg, #b8862b, #e6c56b 55%, #a9791f);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Hairline rule with a gold centre — editorial section divider. */
+.rule-gold {
+  height: 1px;
+  background: linear-gradient(to right, transparent, rgba(198, 154, 62, 0.75), transparent);
+}
+
+/* Faint film-grain texture for a tactile, expensive finish. */
+.bg-grain::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.035;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* Frosted glass surface — theme-aware, so it doesn't stay white in dark mode. */
+.glass {
+  background: hsl(var(--card) / 0.66);
+  backdrop-filter: blur(12px) saturate(1.4);
+  -webkit-backdrop-filter: blur(12px) saturate(1.4);
+}
+
+/* Drifting aurora blobs. */
+@keyframes float-slow {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+  50%      { transform: translate3d(0, -26px, 0) scale(1.09); }
+}
+.blob {
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(64px);
+  animation: float-slow 15s ease-in-out infinite;
+  will-change: transform;
+}
+
+/* Soft brand glow + gradient hairline that appears on hover. */
+.card-glow {
+  position: relative;
+  transition: box-shadow 0.25s ease, transform 0.2s ease;
+}
+.card-glow::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(130deg, rgba(22, 35, 94, 0.5), rgba(42, 68, 184, 0.3), rgba(198, 154, 62, 0.55));
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+  pointer-events: none;
+}
+.card-glow:hover {
+  box-shadow: 0 14px 40px -14px rgba(27, 53, 168, 0.35);
+}
+.card-glow:hover::before { opacity: 1; }
+
+/* One-shot diagonal light sweep (hero preview accent). */
+@keyframes sheen {
+  0%   { transform: translateX(-120%) skewX(-18deg); }
+  60%, 100% { transform: translateX(320%) skewX(-18deg); }
+}
+.animate-sheen { animation: sheen 3.6s ease-in-out infinite; }
+
+@layer base {
+  /* ── Light theme ────────────────────────────────────────────────────────
+     The light counterpart of the dark system below: same mint accent, light
+     surfaces. `--primary` here is deep enough to carry white text (WCAG AA on
+     white); the dark theme uses a bright mint with dark text instead. */
+  :root {
+    --background: 40 20% 98%;
+    --foreground: 200 30% 10%;
+    --card: 0 0% 100%;
+    --card-foreground: 200 30% 10%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 200 30% 10%;
+    --primary: 168 72% 28%; /* deep mint — white text passes AA */
+    --primary-foreground: 0 0% 100%;
+    --secondary: 165 20% 95%;
+    --secondary-foreground: 200 30% 10%;
+    --muted: 165 18% 95%;
+    --muted-foreground: 200 12% 42%;
+    --accent: 168 72% 28%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 72% 47%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 200 16% 88%;
+    --input: 200 16% 88%;
+    --ring: 168 72% 28%;
+    --radius: 0.5rem;
+  }
+
+  /* ── Dark theme ─────────────────────────────────────────────────────────
+     Near-black surfaces with a faint blue-green cast, hairline borders and a
+     bright mint accent. Note `--primary-foreground` is nearly black: the mint is
+     light, so solid buttons carry DARK text (as in the design).
+
+     `--primary` / `--accent` / `--ring` are overridden at runtime by
+     applyBrand() when a specific brand is selected — the mint below is the
+     neutral "all brands" base. */
+  .dark {
+    --background: 200 26% 5%;
+    --foreground: 170 12% 93%;
+    --card: 200 22% 8%;
+    --card-foreground: 170 12% 93%;
+    --popover: 200 22% 9%;
+    --popover-foreground: 170 12% 93%;
+    --primary: 162 84% 45%; /* bright mint */
+    --primary-foreground: 200 40% 6%; /* dark text ON mint */
+    --secondary: 200 16% 13%;
+    --secondary-foreground: 170 12% 93%;
+    --muted: 200 16% 12%;
+    --muted-foreground: 195 9% 58%;
+    --accent: 162 84% 45%;
+    --accent-foreground: 200 40% 6%;
+    --destructive: 356 82% 60%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 200 14% 15%;
+    --input: 200 14% 15%;
+    --ring: 162 84% 45%;
+  }
+
+  /* ── Brand accent themes (driven by the brand filter) ──────────────────
+     These override only the accent colour variables, so every section's
+     buttons / active nav / focus rings / dark-mode headings match the brand.
+     Surfaces stay neutral; the soft page tint is applied separately. */
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings: "rlig" 1, "calt" 1;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  /* Slim, theme-aware scrollbars (WebKit + Firefox). */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: hsl(var(--border)) transparent;
+  }
+  *::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  *::-webkit-scrollbar-thumb {
+    background-color: hsl(var(--border));
+    border: 3px solid transparent;
+    background-clip: content-box;
+    border-radius: 9999px;
+  }
+  *::-webkit-scrollbar-thumb:hover {
+    background-color: hsl(var(--muted-foreground) / 0.5);
+  }
+
+  /* Honor reduced-motion: drop the shimmer and shorten transitions. */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.001ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.001ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+/* Sidebar brand quote card — soft fade/slide-in as the quote rotates. */
+@keyframes quote-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.quote-fade {
+  animation: quote-in 0.6s ease both;
+}

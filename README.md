@@ -83,10 +83,16 @@ the PDF in `src/features/reports/brandLogos.ts` (regenerate via `scripts/gen-bra
 
 ## Deployment (Render)
 
-Deployed as a **static site** (`render.yaml`): `npm ci && npm run build` → publish `./dist`, with a
-SPA rewrite (`/*` → `/index.html`) so deep links refresh correctly. Set `VITE_SUPABASE_URL` and
-`VITE_SUPABASE_ANON_KEY` in the Render dashboard before the first deploy. Auto-deploys on push to
-`main`.
+Deployed as a **static site** (`render.yaml`): `npm ci --include=dev && npm run build` → publish
+`./dist`, with a SPA rewrite (`/*` → `/index.html`) so deep links refresh correctly. Set
+`VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` in the Render dashboard before the first deploy.
+Auto-deploys on push to `main`.
+
+Create the service via **New → Blueprint**, never New → Web Service: a hand-created service
+ignores `render.yaml`, guesses the runtime, and tries to build this app with `go build`.
+
+**[docs/DEPLOY.md](docs/DEPLOY.md)** is the full end-to-end guide — Supabase schema, auth
+config, Edge Function, Render, custom domain, and a troubleshooting table.
 
 ## Scripts
 

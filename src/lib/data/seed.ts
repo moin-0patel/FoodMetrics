@@ -91,9 +91,10 @@ const INGREDIENT_CATEGORIES = [
   "In-House Prep", "Other",
 ];
 
+// Keep in sync with DEFAULT_RECIPE_CATEGORIES in src/features/settings/hooks.ts.
 const RECIPE_CATEGORIES = [
-  "Pasta", "Pizza", "Sushi", "Mains", "Appetizers", "Small Plates",
-  "Sides", "Salad", "Dessert", "Beverage", "In-House Prep",
+  "Pizza", "Pasta", "Burgers", "Starters", "Desserts", "Sushi", "Mains",
+  "Small Plates", "Sides", "Salad", "Beverage", "In-House Prep",
 ];
 
 /**

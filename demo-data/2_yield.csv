@@ -1,9 +1,8 @@
-Ingredient,Purchase Cost,Purchase Quantity,Purchase Unit,Wastage Quantity,Effective From,Notes
-Onion,38,1,KG,180,2026-07-01,Peeling and trimming loss
-Tomato,42,1,KG,120,2026-07-01,Coring loss
-Garlic,180,1,KG,280,2026-07-01,Peeling loss
-Ginger,160,1,KG,150,2026-07-01,Scraping loss
-Romaine Lettuce,220,1,KG,240,2026-07-01,Outer leaves and core
-Chicken Breast,320,1,KG,110,2026-07-01,Trim and sinew
-Coriander,120,1,KG,320,2026-07-01,Stalk removal
-Green Chilli,90,1,KG,90,2026-07-01,Stem removal
+﻿Ingredient,Purchase Cost,Purchase Quantity,Purchase Unit,Wastage Quantity,Effective From,Notes
+Onion,380,10,KG,1800,2026-07-01,Peeling and trimming loss
+Tomato,420,10,KG,1200,2026-07-01,Coring loss
+Garlic,360,2,KG,560,2026-07-01,Peeling loss
+Iceberg Lettuce,420,2,KG,480,2026-07-01,Outer leaves and core
+Chicken Breast,640,2,KG,220,2026-07-01,Trim and sinew
+Parsley,320,1,KG,320,2026-07-01,Stalk removal
+Fresh Basil,700,1,KG,300,2026-07-01,Stalk removal

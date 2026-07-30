@@ -62,7 +62,23 @@ export function PublicFooter() {
           </div>
         </div>
 
-        <div className="mt-10 flex flex-col gap-2 border-t pt-6 text-xs text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
+        {/* Photo attribution. The demo photography is Wikimedia Commons material,
+            most of it CC BY-SA — which obliges us to credit the authors wherever the
+            images are published. This link is that credit; don't drop it unless the
+            photos are replaced with your own. CREDITS.md is served from public/. */}
+        <p className="mt-10 text-xs text-muted-foreground">
+          Photography from Wikimedia Commons under Creative Commons and public-domain
+          licences —{" "}
+          <a
+            href="/demo/photos/CREDITS.md"
+            className="underline decoration-dotted underline-offset-2 hover:text-foreground"
+          >
+            image credits
+          </a>
+          .
+        </p>
+
+        <div className="mt-4 flex flex-col gap-2 border-t pt-6 text-xs text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
           <p>© {year} Food Metrics. All rights reserved.</p>
           {/* Developer credit. The email is intentionally public here. */}
           <p>

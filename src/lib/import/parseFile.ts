@@ -1,10 +1,16 @@
 import type { RawRow } from "./importTypes";
 
-/** Parse the first sheet of a CSV/XLSX file into header-keyed row objects. */
+/** Parse the first sheet of a CSV/XLSX file into header-keyed row objects.
+ *
+ *  `codepage: 65001` forces UTF-8 for CSVs. Without it SheetJS guesses, and guesses
+ *  a single-byte codepage — so "₹1200 · per 25 kg" imports as "â‚¹1200 Â· per 25 kg".
+ *  Every modern exporter (Excel, Google Sheets, this repo's own templates) writes
+ *  UTF-8, and a file carrying a BOM is still honoured over this setting. Ignored for
+ *  XLSX, which stores its own encoding. */
 export async function parseSpreadsheet(file: File): Promise<RawRow[]> {
   const XLSX = await import("xlsx");
   const buf = await file.arrayBuffer();
-  const wb = XLSX.read(buf, { type: "array" });
+  const wb = XLSX.read(buf, { type: "array", codepage: 65001 });
   const ws = wb.Sheets[wb.SheetNames[0]];
   if (!ws) return [];
   return XLSX.utils.sheet_to_json<RawRow>(ws, { defval: "", raw: true });

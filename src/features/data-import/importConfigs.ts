@@ -11,12 +11,34 @@ import {
   type ImportYieldRow,
   type ImportRecipeLine,
 } from "@/lib/data";
-import { pick, toNum, toText, type ImportConfig } from "@/lib/import/importTypes";
+import { pick, toNum, toText, type ImportConfig, type RawRow } from "@/lib/import/importTypes";
 import { canonicalPurchase, type MeasurementType, PURCHASE_UNITS } from "@/lib/units";
 
 interface Deps {
   queryClient: QueryClient;
   userId: string;
+}
+
+/**
+ * Optional recipe-header columns shared by the prep and menu imports. Repeat them
+ * on every row of a recipe or fill them on the first — the importer takes the first
+ * non-empty value (see `importedHeader`). Blank leaves the field untouched, so a
+ * re-import can't wipe text typed in the editor.
+ *
+ * `Method` is ONE cell holding all steps, split on "|" (or a real newline). A comma
+ * is not a separator: steps are prose and routinely contain commas.
+ */
+function headerColumns(row: RawRow) {
+  const prep = toNum(pick(row, ["Prep Time", "Preparation Time", "Prep Time (min)"]));
+  return {
+    description: toText(pick(row, ["Description", "Notes"])) || null,
+    method: toText(pick(row, ["Method", "Steps", "Preparation Steps"]))
+      .split(/[|\n]/)
+      .map((s) => s.trim())
+      .filter(Boolean),
+    preparation_time: prep != null && !Number.isNaN(prep) && prep > 0 ? prep : null,
+    created_by_name: toText(pick(row, ["Created By", "Created By Name", "Chef"])) || null,
+  };
 }
 
 /** Raw materials — COMMON across brands (shared kitchen building blocks). */
@@ -152,6 +174,10 @@ export function recipeImportConfig({
         { label: "Ingredient", required: true },
         { label: "Quantity", required: true },
         { label: "Unit" },
+        { label: "Description" },
+        { label: "Method" },
+        { label: "Prep Time" },
+        { label: "Created By" },
       ],
       sample: {
         "Prep Name": "Tomato Sauce",
@@ -159,6 +185,10 @@ export function recipeImportConfig({
         Ingredient: "Tomato",
         Quantity: 500,
         Unit: "Gram",
+        Description: "Slow-cooked base sauce — one batch keeps 3 days chilled.",
+        Method: "Sweat the aromatics | Add tomato and simmer 40 min | Blend and cool",
+        "Prep Time": 45,
+        "Created By": "Central Kitchen",
       },
       parseRow: (row, n) => {
         const recipe_name = toText(pick(row, ["Prep Name", "Recipe Name", "Name"]));
@@ -177,6 +207,7 @@ export function recipeImportConfig({
             unit: toText(pick(row, ["Unit"])) || "Gram",
             selling_price: null,
             packaging_cost: null,
+            ...headerColumns(row),
           },
         };
       },
@@ -200,6 +231,10 @@ export function recipeImportConfig({
       { label: "Selling Price" },
       { label: "Packaging" },
       { label: "Image" },
+      { label: "Description" },
+      { label: "Method" },
+      { label: "Prep Time" },
+      { label: "Created By" },
     ],
     sample: {
       "Recipe Name": "Signature Pizza",
@@ -210,7 +245,11 @@ export function recipeImportConfig({
       Unit: "Gram",
       "Selling Price": 940,
       Packaging: 30,
-      Image: "/demo/pizza.svg",
+      Image: "/demo/photos/margherita-pizza.jpg",
+      Description: "Prep 20 min · Cook 8 min · Easy — thin-crust pizza finished with basil.",
+      Method: "Stretch the dough to 15 inch | Spread sauce and cheese | Bake at 280°C for 8 min",
+      "Prep Time": 20,
+      "Created By": "Chef Rahul",
     },
     parseRow: (row, n) => {
       const recipe_name = toText(pick(row, ["Recipe Name", "Recipe", "Name"]));
@@ -233,8 +272,9 @@ export function recipeImportConfig({
           unit: toText(pick(row, ["Unit"])) || "Gram",
           selling_price: selling != null && !Number.isNaN(selling) ? selling : null,
           packaging_cost: pkg != null && !Number.isNaN(pkg) ? pkg : null,
-          // Optional: a public path ("/demo/pizza.svg") or an absolute URL.
+          // Optional: a public path ("/demo/photos/pizza.jpg") or an absolute URL.
           image_url: toText(pick(row, ["Image", "Image URL", "Photo"])) || null,
+          ...headerColumns(row),
         },
       };
     },

@@ -12,7 +12,9 @@ import type { ImportSummary } from "../../import/importTypes";
 import { delay, getDb, type MockDb, mutate, nowISO, uid } from "./db";
 import { cascadeFromPrep, findMaterial, recomputeAndPropagate, recordAudit } from "./recompute";
 
-/** One row of a recipe import (§37) — one ingredient line; many rows per recipe. */
+/** One row of a recipe import (§37) — one ingredient line; many rows per recipe.
+ *  Header-level fields (everything except ingredient_name/quantity/unit) are
+ *  repeated on every row of a recipe; the importer takes the first non-null. */
 export interface ImportRecipeLine {
   recipe_name: string;
   category: string;
@@ -24,6 +26,34 @@ export interface ImportRecipeLine {
   packaging_cost: number | null;
   /** Optional dish image (public path or URL). Omitted/null leaves it imageless. */
   image_url?: string | null;
+  /** Optional recipe blurb. */
+  description?: string | null;
+  /** Optional ordered preparation steps. */
+  method?: string[] | null;
+  /** Optional prep time in minutes. */
+  preparation_time?: number | null;
+  /** Optional creator label ("Chef Rahul"). The editor requires one, so an
+   *  imported recipe without it can't be re-saved until someone types it. */
+  created_by_name?: string | null;
+}
+
+/** Collapse a recipe's import rows into its optional header fields — first
+ *  non-empty value wins, exactly as selling_price/packaging do. Shared by the mock
+ *  and Supabase importers so the two can't drift. Null means "column absent",
+ *  which callers treat as "leave whatever is already there". */
+export function importedHeader(ls: ImportRecipeLine[]): {
+  description: string | null;
+  method: string[] | null;
+  preparation_time: number | null;
+  created_by_name: string | null;
+} {
+  const method = ls.find((l) => l.method?.length)?.method ?? null;
+  return {
+    description: ls.find((l) => l.description)?.description ?? null,
+    method: method?.length ? method : null,
+    preparation_time: ls.find((l) => l.preparation_time != null)?.preparation_time ?? null,
+    created_by_name: ls.find((l) => l.created_by_name)?.created_by_name ?? null,
+  };
 }
 
 export interface RecipeHeaderInput {
@@ -382,6 +412,7 @@ export const recipesRepo = {
           );
           const selling = ls.find((l) => l.selling_price != null)?.selling_price ?? null;
           const pkg = ls.find((l) => l.packaging_cost != null)?.packaging_cost ?? null;
+          const header = importedHeader(ls);
           if (existing) {
             if (mode === "add") return { id: existing.id, action: "skipped" };
             writeRows(existing.id, ls);
@@ -391,6 +422,12 @@ export const recipesRepo = {
             if (!isPrep && pkg != null) existing.packaging_cost = pkg;
             const img = ls.find((l) => l.image_url)?.image_url ?? null;
             if (img) existing.image_url = img;
+            // Optional columns only overwrite when the file supplies them, so a
+            // bare re-import never wipes text typed in the editor.
+            if (header.description != null) existing.description = header.description;
+            if (header.method != null) existing.method = header.method;
+            if (header.preparation_time != null) existing.preparation_time = header.preparation_time;
+            if (header.created_by_name != null) existing.created_by_name = header.created_by_name;
             existing.updated_at = nowISO();
             existing.updated_by = actorId;
             recomputeIds.push(existing.id);
@@ -399,10 +436,13 @@ export const recipesRepo = {
           if (mode === "update") return { id: null, action: "skipped" };
           const id = uid();
           db.recipes.push({
-            id, recipe_name: name, category, brand, description: null, method: [],
+            id, recipe_name: name, category, brand,
+            description: header.description, method: header.method ?? [],
+            created_by_name: header.created_by_name,
             parent_recipe_id: parentId, size_code: sizeCode,
             size_label: sizeCode === "11_INCH" ? "11-inch" : sizeCode === "15_INCH" ? "15-inch" : null,
-            image_url: ls.find((l) => l.image_url)?.image_url ?? null, preparation_time: null, serving_size: 1, status: "draft",
+            image_url: ls.find((l) => l.image_url)?.image_url ?? null,
+            preparation_time: header.preparation_time, serving_size: 1, status: "draft",
             selling_price: isPrep ? null : selling, packaging_cost: isPrep ? 0 : pkg ?? 0, total_cost: 0, cost_per_portion: 0,
             wastage_pct: 5, is_prep: isPrep,
             yield_quantity: isPrep ? ls.reduce((s, l) => s + (l.quantity || 0), 0) : 0, yield_unit: "Gram",

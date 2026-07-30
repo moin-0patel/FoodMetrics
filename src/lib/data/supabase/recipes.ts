@@ -28,6 +28,7 @@ import {
   recomputeRecipes,
   sb,
 } from "./helpers";
+import { importedHeader } from "../mock/recipes";
 import type {
   ImportRecipeLine,
   RecipeHeaderInput,
@@ -452,6 +453,7 @@ export const supabaseRecipesRepo = {
       );
       const selling = ls.find((l) => l.selling_price != null)?.selling_price ?? null;
       const pkg = ls.find((l) => l.packaging_cost != null)?.packaging_cost ?? null;
+      const header = importedHeader(ls);
       if (existing) {
         if (mode === "add") return { id: existing.id, action: "skipped" };
         lineWrites.push({ recipeId: existing.id, rows: buildRows(existing.id, ls) });
@@ -463,6 +465,14 @@ export const supabaseRecipesRepo = {
         // In-House Prep has no menu price / packaging (Total Cost only).
         if (!isPrep && selling != null) patch.selling_price = selling;
         if (!isPrep && pkg != null) patch.packaging_cost = pkg;
+        const img = ls.find((l) => l.image_url)?.image_url ?? null;
+        if (img) patch.image_url = img;
+        // Optional columns only overwrite when the file supplies them, so a bare
+        // re-import never wipes text typed in the editor.
+        if (header.description != null) patch.description = header.description;
+        if (header.method != null) patch.method = header.method;
+        if (header.preparation_time != null) patch.preparation_time = header.preparation_time;
+        if (header.created_by_name != null) patch.created_by_name = header.created_by_name;
         recipeUpdates.push({ id: existing.id, patch });
         recomputeIds.push(existing.id);
         return { id: existing.id, action: "updated" };
@@ -474,14 +484,17 @@ export const supabaseRecipesRepo = {
         recipe_name: name,
         category,
         brand,
-        description: null,
-        method: [],
+        // Optional "Description" / "Method" / "Created By" columns.
+        description: header.description,
+        method: header.method ?? [],
+        created_by_name: header.created_by_name,
         parent_recipe_id: parentId,
         size_code: sizeCode,
         size_label: sizeCode === "11_INCH" ? "11-inch" : sizeCode === "15_INCH" ? "15-inch" : null,
         // Optional "Image" column on the menu import.
         image_url: ls.find((l) => l.image_url)?.image_url ?? null,
-        preparation_time: null,
+        // Optional "Prep Time" column (minutes).
+        preparation_time: header.preparation_time,
         serving_size: 1,
         status: "draft",
         selling_price: isPrep ? null : selling,

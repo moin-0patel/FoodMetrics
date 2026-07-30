@@ -64,72 +64,46 @@ const DISHES = {
       scatter(9, 15, "#f6f1e4", 7) +
       scatter(11, 7, "#3f7d34", 21),
   }),
-  "penne-arrabbiata": plate({
-    bg: ["#2a1512", "#120807"],
-    rim: "#d9b48a",
-    plate: "#f0e2cc",
+  "alfredo-pasta": plate({
+    bg: ["#2a2117", "#120d08"],
+    rim: "#e4d2ae",
+    plate: "#f4e9d2",
     garnish:
-      `<circle cx="320" cy="205" r="104" fill="#c0402a"/>` +
-      scatter(14, 17, "#e9c98f", 5) +
-      scatter(9, 6, "#37701f", 33),
+      `<circle cx="320" cy="205" r="104" fill="#efe0bd"/>` +
+      scatter(15, 16, "#f7eed8", 5) +
+      scatter(10, 6, "#5c8f3a", 33),
   }),
-  "butter-chicken": plate({
-    bg: ["#2c1c0d", "#140c05"],
+  "chicken-burger": plate({
+    bg: ["#2c1d10", "#140c06"],
     rim: "#e3c79c",
     plate: "#f5e6c8",
     garnish:
-      `<circle cx="320" cy="205" r="106" fill="#c8622a"/>` +
-      `<circle cx="320" cy="205" r="96" fill="#d8763a"/>` +
-      scatter(8, 20, "#b9541f", 11) +
-      `<path d="M250 150 q70 -22 140 0" stroke="#fff" stroke-opacity="0.5" stroke-width="7" fill="none" stroke-linecap="round"/>` +
-      scatter(7, 5, "#2f6b25", 41),
+      // Bun crown, fillings, bun heel — stacked rather than scattered.
+      `<path d="M212 186 q108 -76 216 0 z" fill="#d99b4f"/>` +
+      `<rect x="212" y="186" width="216" height="18" rx="6" fill="#79a63f"/>` +
+      `<rect x="212" y="200" width="216" height="26" rx="6" fill="#b3652c"/>` +
+      `<rect x="212" y="222" width="216" height="16" rx="6" fill="#e8b62f"/>` +
+      `<path d="M212 238 q108 40 216 0 z" fill="#c98a3f"/>` +
+      scatter(7, 4, "#f6ecd2", 19),
   }),
-  "dal-makhani": plate({
-    bg: ["#241a10", "#100a06"],
-    rim: "#d8bd93",
-    plate: "#efe0c2",
+  "garlic-bread": plate({
+    bg: ["#2a2013", "#120c07"],
+    rim: "#e0cba2",
+    plate: "#f3e6c9",
     garnish:
-      `<circle cx="320" cy="205" r="104" fill="#5a3520"/>` +
-      `<circle cx="320" cy="205" r="94" fill="#6d4026"/>` +
-      `<path d="M258 175 q62 -26 124 0" stroke="#fff" stroke-opacity="0.55" stroke-width="8" fill="none" stroke-linecap="round"/>` +
-      scatter(6, 5, "#8fbf5a", 17),
+      `<g>${[0, 1].map((i) => `<rect x="${196 + i * 130}" y="140" width="112" height="128" rx="42" fill="#e2b871"/><rect x="${208 + i * 130}" y="152" width="88" height="104" rx="34" fill="#f2dfa8"/>`).join("")}</g>` +
+      scatter(9, 5, "#5c8f3a", 27),
   }),
-  "paneer-tikka": plate({
-    bg: ["#2a1b12", "#120a07"],
-    rim: "#dfc59b",
-    plate: "#f3e5c9",
-    garnish:
-      scatter(0, 0, "#000") +
-      `<g>${[0, 1, 2].map((i) => `<rect x="${232 + i * 62}" y="140" width="46" height="46" rx="8" fill="#e8a13c"/><rect x="${232 + i * 62}" y="196" width="46" height="46" rx="8" fill="#d4842a"/>`).join("")}</g>` +
-      scatter(8, 6, "#3f7d34", 29),
-  }),
-  "caesar-salad": plate({
-    bg: ["#1b2416", "#0a0f08"],
-    rim: "#cfd8bc",
-    plate: "#eef3e2",
-    garnish:
-      scatter(16, 20, "#4e8f3a", 3) +
-      scatter(12, 11, "#6fb04d", 13) +
-      scatter(9, 8, "#e8d9a8", 23),
-  }),
-  "chocolate-tart": plate({
+  "lava-cake": plate({
     bg: ["#1e1410", "#0c0705"],
     rim: "#d9c3a3",
     plate: "#f1e4cf",
     garnish:
-      `<circle cx="320" cy="202" r="98" fill="#4a2a1c"/>` +
-      `<circle cx="320" cy="202" r="86" fill="#35190f"/>` +
-      `<circle cx="320" cy="202" r="30" fill="#e8dcc6" opacity="0.85"/>` +
-      scatter(7, 6, "#c0472f", 37),
-  }),
-  "masala-chai": plate({
-    bg: ["#241a12", "#100a07"],
-    rim: "#dcc4a0",
-    plate: "#f2e5cd",
-    garnish:
-      `<circle cx="320" cy="202" r="92" fill="#b98a56"/>` +
-      `<circle cx="320" cy="202" r="80" fill="#caa070"/>` +
-      `<path d="M268 168 q52 -20 104 0" stroke="#fff" stroke-opacity="0.45" stroke-width="9" fill="none" stroke-linecap="round"/>`,
+      `<circle cx="320" cy="202" r="92" fill="#4a2a1c"/>` +
+      `<circle cx="320" cy="202" r="80" fill="#35190f"/>` +
+      `<circle cx="320" cy="202" r="26" fill="#6b3a1e"/>` +
+      `<path d="M300 226 q22 34 44 0" stroke="#5a2f18" stroke-width="12" fill="none" stroke-linecap="round"/>` +
+      scatter(6, 6, "#c0472f", 37),
   }),
 };
 

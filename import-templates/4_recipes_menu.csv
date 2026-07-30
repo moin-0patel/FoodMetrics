@@ -1,8 +1,8 @@
-Recipe Name,Category,Size,Ingredient,Quantity,Unit,Selling Price,Packaging
-Margherita Pizza,Pizza,15-inch,Pizza Dough,310,Gram,940,30
-Margherita Pizza,Pizza,15-inch,Tomato Sauce,120,Gram,940,30
-Margherita Pizza,Pizza,15-inch,Mozzarella,150,Gram,940,30
-Margherita Pizza,Pizza,11-inch,Pizza Dough,210,Gram,620,25
-Margherita Pizza,Pizza,11-inch,Tomato Sauce,90,Gram,620,25
-Katsu Curry,Mains,,Chicken,220,Gram,640,20
-Katsu Curry,Mains,,Curry Sauce,150,Gram,640,20
+﻿Recipe Name,Category,Size,Ingredient,Quantity,Unit,Selling Price,Packaging,Image,Description,Method,Prep Time,Created By
+Margherita Pizza,Pizza,15-inch,Pizza Dough,310,Gram,940,30,/demo/photos/margherita-pizza.jpg,"Prep 20 min · Cook 8 min · Easy · 1 portion — thin crust, tomato and basil.","Stretch the dough | Spread sauce and cheese | Bake at 280°C for 8 min | Finish with basil",20,Chef Rahul
+Margherita Pizza,Pizza,15-inch,Tomato Sauce,120,Gram,940,30,/demo/photos/margherita-pizza.jpg,,,,
+Margherita Pizza,Pizza,15-inch,Mozzarella,150,Gram,940,30,/demo/photos/margherita-pizza.jpg,,,,
+Margherita Pizza,Pizza,11-inch,Pizza Dough,210,Gram,620,25,/demo/photos/margherita-pizza.jpg,,,,
+Margherita Pizza,Pizza,11-inch,Tomato Sauce,90,Gram,620,25,/demo/photos/margherita-pizza.jpg,,,,
+Katsu Curry,Mains,,Chicken,220,Gram,640,20,,"Prep 25 min · Cook 15 min · Medium · 1 portion.","Crumb and fry the chicken | Warm the curry sauce | Slice and plate with rice",25,Chef Priya
+Katsu Curry,Mains,,Curry Sauce,150,Gram,640,20,,,,,

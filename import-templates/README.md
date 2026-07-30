@@ -32,19 +32,40 @@ Columns: **Ingredient\***, **Purchase Cost\***, **Purchase Quantity\***, **Purch
 - **Effective From** — `YYYY-MM-DD` (optional; defaults to today).
 
 ## 3. Recipes — In-House Prep
-Columns: **Prep Name\***, Category, **Ingredient\***, **Quantity\***, Unit
+Columns: **Prep Name\***, Category, **Ingredient\***, **Quantity\***, Unit,
+Description, Method, Prep Time, Created By
 - **One row per ingredient.** Repeat the same **Prep Name** on multiple rows to add
   all its ingredients (see `Tomato Sauce` in the sample — 3 rows = 1 prep).
 - **Unit** — one of `KG, Gram, Litre, ML, Piece, Dozen, Packet, Bottle, Can` (default `Gram`).
+- Description / Method / Prep Time / Created By — see *Recipe text columns* below.
 
 ## 4. Recipes — Menu
 Columns: **Recipe Name\***, Category, Size, **Ingredient\***, **Quantity\***, Unit,
-Selling Price, Packaging
+Selling Price, Packaging, Image, Description, Method, Prep Time, Created By
 - **One row per ingredient** — repeat Recipe Name (and Size) across rows.
 - **Size** — pizzas only: `11-inch` or `15-inch`. Leave blank for everything else.
   Different sizes of the same recipe are separate variants — repeat all ingredient rows
   per size (see the two Margherita blocks in the sample).
 - **Selling Price** / **Packaging** — numbers (₹); can be blank.
+- **Image** — a path under `public/` (`/demo/photos/margherita-pizza.jpg`) or an
+  absolute URL.
+
+### Recipe text columns (both recipe files)
+These describe the recipe, not the ingredient row, so fill them on the **first row**
+of each recipe and leave them blank on the rest — the importer takes the first
+non-empty value it finds, exactly as it does for Selling Price.
+
+| Column | Notes |
+|---|---|
+| `Description` | Free text. The app has no cooking-time or difficulty field, so those usually go here: `Prep 20 min · Cook 8 min · Easy · 1 portion — …` |
+| `Method` | **One cell holding every step**, separated by `\|`. Commas are not separators — steps are prose and contain them. Shown as a numbered list. |
+| `Prep Time` | Minutes, a number. |
+| `Created By` | Creator label, e.g. `Chef Rahul`. The recipe editor requires one, so an imported recipe without it can't be re-saved until someone types it in. |
+
+Leaving one of these blank on an **update**/**upsert** leaves the existing value
+alone, so re-importing to refresh prices won't wipe text typed in the editor. Any
+cell containing a comma must be wrapped in double quotes (standard CSV) — or use
+XLSX, where it doesn't matter.
 
 ---
 

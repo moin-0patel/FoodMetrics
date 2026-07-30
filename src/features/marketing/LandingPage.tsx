@@ -117,7 +117,7 @@ export function LandingPage() {
         <section id="overview" className="relative isolate overflow-hidden">
           <PhotoSlot
             className="absolute inset-0 -z-10"
-            src="/demo/photos/margherita-pizza.jpg"
+            src="/demo/photos/dining-room.jpg"
             alt=""
             icon={Flame}
             caption="Hero shot — the line during service"
@@ -180,7 +180,7 @@ export function LandingPage() {
               <article className="overflow-hidden rounded-2xl border bg-card lg:col-span-2">
                 <PhotoSlot
                   className="h-52 w-full sm:h-64"
-                  src="/demo/photos/butter-chicken.jpg"
+                  src="/demo/photos/margherita-pizza.jpg"
                   icon={Gauge}
                   caption="Dashboard on the pass"
                 />
@@ -263,7 +263,7 @@ export function LandingPage() {
                       ))}
                     </ul>
                   </div>
-                  <PhotoSlot className="min-h-[180px]" src="/demo/photos/pantry-shelves.jpg" icon={Package} caption="Pantry / walk-in" />
+                  <PhotoSlot className="min-h-[180px]" src="/demo/photos/garlic-bread.jpg" icon={Package} caption="Pantry / walk-in" />
                 </div>
               </article>
             </div>
@@ -309,7 +309,7 @@ export function LandingPage() {
 
               <PhotoSlot
                 className="aspect-[4/3] w-full rounded-2xl"
-                src="/demo/photos/dining-room.jpg"
+                src="/demo/photos/lava-cake.jpg"
                 icon={Utensils}
                 caption="Dining room / plated dish"
               />

@@ -8,7 +8,7 @@ import { Logo } from "@/components/brand/Logo";
 // public/demo/photos/CREDITS.md). Swap PANEL_PHOTO for your own and the credit
 // obligation goes away. If the file is missing the scrim alone still renders, so
 // the panel degrades to a plain dark surface rather than breaking.
-const PANEL_PHOTO = "/demo/photos/butter-chicken.jpg";
+const PANEL_PHOTO = "/demo/photos/dining-room.jpg";
 
 const CAPABILITIES = [
   { icon: Calculator, label: "Recipe Costing" },

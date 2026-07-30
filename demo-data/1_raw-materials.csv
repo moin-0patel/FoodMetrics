@@ -1,39 +1,34 @@
-Ingredient,Category,Material Type,Purchase Price,Notes
-Refined Flour,Grains & Flour,Weight,48,Maida — per 1 kg
-Semolina,Grains & Flour,Weight,62,
-Penne Pasta,Grains & Flour,Weight,180,
-Basmati Rice,Grains & Flour,Weight,145,
-Onion,Vegetables,Weight,38,
-Tomato,Vegetables,Weight,42,
-Garlic,Vegetables,Weight,180,
-Ginger,Vegetables,Weight,160,
-Green Chilli,Vegetables,Weight,90,
-Romaine Lettuce,Vegetables,Weight,220,
-Fresh Basil,Vegetables,Weight,700,
-Coriander,Vegetables,Weight,120,
-Mozzarella Cheese,Dairy,Weight,520,
-Parmesan Cheese,Dairy,Weight,1450,
-Paneer,Dairy,Weight,380,
-Butter,Dairy,Weight,560,
-Fresh Cream,Dairy,Liquid,320,Per 1 litre
-Milk,Dairy,Liquid,68,Per 1 litre
-Yoghurt,Dairy,Weight,110,
-Chicken Breast,Protein,Weight,320,
-Black Urad Dal,Grains & Flour,Weight,140,
-Rajma,Grains & Flour,Weight,130,
-Olive Oil,Oils & Fats,Liquid,880,Per 1 litre
-Sunflower Oil,Oils & Fats,Liquid,145,Per 1 litre
-Salt,Spices,Weight,22,
-Black Pepper,Spices,Weight,1100,
-Red Chilli Powder,Spices,Weight,320,
-Turmeric,Spices,Weight,280,
-Garam Masala,Spices,Weight,620,
-Cumin Seeds,Spices,Weight,420,
-Kasuri Methi,Spices,Weight,780,
-Tea Leaves,Beverages,Weight,480,
-Cardamom,Spices,Weight,2800,
-Sugar,Bakery,Weight,46,
-Dark Chocolate,Bakery,Weight,690,
-Eggs,Protein,Count,7,Per 1 piece
-Active Dry Yeast,Bakery,Weight,540,
-Croutons,Bakery,Weight,260,
+﻿Ingredient,Category,Material Type,Purchase Price,Notes
+Refined Flour,Grains & Flour,Weight,48,Suraj Flour Mills · maida · ₹1200 per 25 kg sack
+Penne Pasta,Grains & Flour,Weight,185,Casa Nova Foods · ₹92.50 per 500 g pack
+Breadcrumbs,Grains & Flour,Weight,160,Metro Bakehouse · panko style · 1 kg pack
+Burger Bun,Bakery,Count,12,Metro Bakehouse · brioche · ₹72 per pack of 6
+French Bread,Bakery,Count,55,Metro Bakehouse · demi baguette · each
+Sugar,Bakery,Weight,46,Anand Provisions · ₹2300 per 50 kg sack
+Cocoa Powder,Bakery,Weight,720,Belrose Cocoa · alkalised · 1 kg tin
+Dark Chocolate,Bakery,Weight,690,Belrose Cocoa · 55% couverture callets · 2.5 kg box
+Active Dry Yeast,Bakery,Weight,540,Suraj Flour Mills · 500 g vacuum pack
+Vanilla Essence,Bakery,Liquid,480,Anand Provisions · ₹96 per 200 ml bottle
+Mozzarella Cheese,Dairy,Weight,520,Kaveri Creamery · fior di latte block · 2 kg
+Parmesan Cheese,Dairy,Weight,1450,Kaveri Creamery · 12-month aged wedge · 1 kg
+Cheese Slice,Dairy,Count,9,Kaveri Creamery · processed cheddar · ₹108 per pack of 12
+Butter,Dairy,Weight,560,Kaveri Creamery · unsalted · 500 g block
+Fresh Cream,Dairy,Liquid,320,Kaveri Creamery · 25% fat · 1 litre tetra
+Milk,Dairy,Liquid,68,Kaveri Creamery · full cream · 1 litre pouch
+Onion,Vegetables,Weight,38,Greenfield Produce · ₹380 per 10 kg crate
+Tomato,Vegetables,Weight,42,Greenfield Produce · ₹420 per 10 kg crate
+Garlic,Vegetables,Weight,180,Greenfield Produce · ₹360 per 2 kg net
+Iceberg Lettuce,Vegetables,Weight,210,Greenfield Produce · ₹420 per 2 kg case
+Fresh Basil,Vegetables,Weight,700,Hillside Herbs · 100 g clamshell
+Parsley,Vegetables,Weight,320,Hillside Herbs · flat-leaf · 100 g bunch
+Chicken Breast,Protein,Weight,320,Coastline Meats · boneless skinless · ₹640 per 2 kg
+Eggs,Protein,Count,7,Sunrise Poultry · ₹210 per tray of 30
+Olive Oil,Oils & Fats,Liquid,880,Oliveto Imports · extra virgin · 5 litre tin
+Sunflower Oil,Oils & Fats,Liquid,145,Anand Provisions · 15 litre jerrycan
+Salt,Spices,Weight,22,Anand Provisions · iodised · 1 kg pack
+Black Pepper,Spices,Weight,1100,Malabar Spice Co · coarse ground · 500 g
+Oregano,Spices,Weight,620,Malabar Spice Co · dried · 200 g
+Red Chilli Powder,Spices,Weight,320,Malabar Spice Co · Kashmiri · 1 kg
+Mayonnaise,Sauces & Condiments,Weight,240,Anand Provisions · eggless · 1 kg jar
+Tomato Ketchup,Sauces & Condiments,Weight,130,Anand Provisions · 1 kg squeeze bottle
+Mustard Sauce,Sauces & Condiments,Weight,380,Oliveto Imports · Dijon · 500 g jar

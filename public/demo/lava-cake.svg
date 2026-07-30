@@ -13,5 +13,5 @@
   <circle cx="320" cy="205" r="150" fill="#d9c3a3" opacity="0.55"/>
   <circle cx="320" cy="200" r="132" fill="#f1e4cf"/>
   <circle cx="320" cy="200" r="132" fill="none" stroke="#000" stroke-opacity="0.07" stroke-width="2"/>
-  <circle cx="320" cy="202" r="98" fill="#4a2a1c"/><circle cx="320" cy="202" r="86" fill="#35190f"/><circle cx="320" cy="202" r="30" fill="#e8dcc6" opacity="0.85"/><circle cx="418.4" cy="206.8" r="6" fill="#c0472f"/><circle cx="362.9" cy="175.3" r="6" fill="#c0472f"/><circle cx="305.5" cy="146.8" r="6" fill="#c0472f"/><circle cx="342.4" cy="144.6" r="6" fill="#c0472f"/><circle cx="257.2" cy="193.7" r="6" fill="#c0472f"/><circle cx="411.7" cy="200.5" r="6" fill="#c0472f"/><circle cx="281.4" cy="160.3" r="6" fill="#c0472f"/>
+  <circle cx="320" cy="202" r="92" fill="#4a2a1c"/><circle cx="320" cy="202" r="80" fill="#35190f"/><circle cx="320" cy="202" r="26" fill="#6b3a1e"/><path d="M300 226 q22 34 44 0" stroke="#5a2f18" stroke-width="12" fill="none" stroke-linecap="round"/><circle cx="418.4" cy="206.8" r="6" fill="#c0472f"/><circle cx="362.9" cy="175.3" r="6" fill="#c0472f"/><circle cx="305.5" cy="146.8" r="6" fill="#c0472f"/><circle cx="342.4" cy="144.6" r="6" fill="#c0472f"/><circle cx="257.2" cy="193.7" r="6" fill="#c0472f"/><circle cx="411.7" cy="200.5" r="6" fill="#c0472f"/>
 </svg>

@@ -1,34 +1,39 @@
-Prep Name,Category,Ingredient,Quantity,Unit
-Pizza Dough,In-House Prep,Refined Flour,1000,Gram
-Pizza Dough,In-House Prep,Olive Oil,60,ML
-Pizza Dough,In-House Prep,Active Dry Yeast,12,Gram
-Pizza Dough,In-House Prep,Salt,18,Gram
-Pomodoro Sauce,In-House Prep,Tomato,1200,Gram
-Pomodoro Sauce,In-House Prep,Onion,180,Gram
-Pomodoro Sauce,In-House Prep,Garlic,45,Gram
-Pomodoro Sauce,In-House Prep,Olive Oil,80,ML
-Pomodoro Sauce,In-House Prep,Fresh Basil,20,Gram
-Pomodoro Sauce,In-House Prep,Salt,14,Gram
-Arrabbiata Base,In-House Prep,Tomato,900,Gram
-Arrabbiata Base,In-House Prep,Garlic,60,Gram
-Arrabbiata Base,In-House Prep,Red Chilli Powder,18,Gram
-Arrabbiata Base,In-House Prep,Olive Oil,70,ML
-Makhani Gravy,In-House Prep,Tomato,1400,Gram
-Makhani Gravy,In-House Prep,Butter,220,Gram
-Makhani Gravy,In-House Prep,Fresh Cream,180,ML
-Makhani Gravy,In-House Prep,Ginger,40,Gram
-Makhani Gravy,In-House Prep,Garam Masala,14,Gram
-Makhani Gravy,In-House Prep,Kasuri Methi,8,Gram
-Tikka Marinade,In-House Prep,Yoghurt,500,Gram
-Tikka Marinade,In-House Prep,Red Chilli Powder,22,Gram
-Tikka Marinade,In-House Prep,Turmeric,10,Gram
-Tikka Marinade,In-House Prep,Ginger,35,Gram
-Tikka Marinade,In-House Prep,Garlic,35,Gram
-Caesar Dressing,In-House Prep,Yoghurt,300,Gram
-Caesar Dressing,In-House Prep,Parmesan Cheese,90,Gram
-Caesar Dressing,In-House Prep,Olive Oil,120,ML
-Caesar Dressing,In-House Prep,Garlic,20,Gram
-Caesar Dressing,In-House Prep,Black Pepper,6,Gram
-Chai Masala Base,In-House Prep,Tea Leaves,120,Gram
-Chai Masala Base,In-House Prep,Cardamom,18,Gram
-Chai Masala Base,In-House Prep,Ginger,60,Gram
+﻿Prep Name,Category,Ingredient,Quantity,Unit,Description,Method,Prep Time,Created By
+Pizza Dough,In-House Prep,Refined Flour,1000,Gram,"Cold-fermented 24 hours for a blistered thin crust. One batch yields about four 280 g bases.","Bloom the yeast with the sugar in warm water | Add the flour and salt then knead 10 min | Work in the olive oil until smooth and elastic | Cover and cold-ferment 24 hr | Divide into 280 g balls and rest 1 hr at room temperature",25,Central Kitchen
+Pizza Dough,In-House Prep,Olive Oil,60,ML,,,,
+Pizza Dough,In-House Prep,Active Dry Yeast,12,Gram,,,,
+Pizza Dough,In-House Prep,Salt,18,Gram,,,,
+Pizza Dough,In-House Prep,Sugar,10,Gram,,,,
+Pizza Sauce,In-House Prep,Tomato,1200,Gram,"Tomato base finished with torn basil off the heat. Keeps three days chilled.","Blanch peel and core the tomatoes | Sweat the onion and garlic in olive oil without colour | Add the tomato and simmer 30 min | Season with salt sugar and oregano | Blend coarse then fold in the torn basil",40,Central Kitchen
+Pizza Sauce,In-House Prep,Onion,150,Gram,,,,
+Pizza Sauce,In-House Prep,Garlic,40,Gram,,,,
+Pizza Sauce,In-House Prep,Olive Oil,60,ML,,,,
+Pizza Sauce,In-House Prep,Fresh Basil,15,Gram,,,,
+Pizza Sauce,In-House Prep,Oregano,8,Gram,,,,
+Pizza Sauce,In-House Prep,Salt,12,Gram,,,,
+Pizza Sauce,In-House Prep,Sugar,10,Gram,,,,
+Alfredo Sauce,In-House Prep,Fresh Cream,600,ML,"Parmesan cream sauce made fresh each service. Split-prone — hold below 70°C.","Melt the butter and sweat the garlic without colour | Add the cream and milk then reduce by a quarter | Whisk in the grated parmesan off the heat | Season with salt and black pepper | Pass through a fine sieve",20,Chef Priya
+Alfredo Sauce,In-House Prep,Milk,300,ML,,,,
+Alfredo Sauce,In-House Prep,Butter,120,Gram,,,,
+Alfredo Sauce,In-House Prep,Parmesan Cheese,150,Gram,,,,
+Alfredo Sauce,In-House Prep,Garlic,30,Gram,,,,
+Alfredo Sauce,In-House Prep,Black Pepper,6,Gram,,,,
+Alfredo Sauce,In-House Prep,Salt,10,Gram,,,,
+Garlic Butter,In-House Prep,Butter,500,Gram,"Compound butter for garlic bread and finishing. Rolls and freezes well.","Soften the butter to room temperature | Grate the garlic to a paste | Beat in the garlic parsley and salt | Roll in parchment and chill until firm",15,Central Kitchen
+Garlic Butter,In-House Prep,Garlic,90,Gram,,,,
+Garlic Butter,In-House Prep,Parsley,25,Gram,,,,
+Garlic Butter,In-House Prep,Salt,6,Gram,,,,
+Burger Sauce,In-House Prep,Mayonnaise,500,Gram,"House burger sauce mixed cold in one bowl. Keeps five days chilled.","Whisk the mayonnaise ketchup and mustard together | Grate in the garlic | Season with black pepper | Rest 1 hr before service",10,Chef Imran
+Burger Sauce,In-House Prep,Tomato Ketchup,150,Gram,,,,
+Burger Sauce,In-House Prep,Mustard Sauce,40,Gram,,,,
+Burger Sauce,In-House Prep,Garlic,20,Gram,,,,
+Burger Sauce,In-House Prep,Black Pepper,4,Gram,,,,
+Chicken Patty,In-House Prep,Chicken Breast,1000,Gram,"Hand-formed chicken patties. One batch yields about eight 130 g patties.","Mince the chicken breast coarse | Sweat the onion and garlic then cool completely | Mix with the breadcrumbs egg and seasoning | Form 130 g patties and rest chilled 1 hr | Seal in sunflower oil before service",35,Chef Imran
+Chicken Patty,In-House Prep,Breadcrumbs,120,Gram,,,,
+Chicken Patty,In-House Prep,Onion,100,Gram,,,,
+Chicken Patty,In-House Prep,Garlic,25,Gram,,,,
+Chicken Patty,In-House Prep,Eggs,2,Piece,,,,
+Chicken Patty,In-House Prep,Red Chilli Powder,10,Gram,,,,
+Chicken Patty,In-House Prep,Salt,12,Gram,,,,
+Chicken Patty,In-House Prep,Black Pepper,5,Gram,,,,
+Chicken Patty,In-House Prep,Sunflower Oil,40,ML,,,,

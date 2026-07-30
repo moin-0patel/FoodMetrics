@@ -22,9 +22,11 @@ export function useCategories() {
   });
 }
 
+// Keep in sync with RECIPE_CATEGORIES in src/lib/data/seed.ts — that list seeds the
+// setting row; this one is the fallback when no row exists yet.
 const DEFAULT_RECIPE_CATEGORIES = [
-  "Pasta", "Pizza", "Sushi", "Mains", "Appetizers", "Small Plates",
-  "Sides", "Salad", "Dessert", "Beverage", "In-House Prep",
+  "Pizza", "Pasta", "Burgers", "Starters", "Desserts", "Sushi", "Mains",
+  "Small Plates", "Sides", "Salad", "Beverage", "In-House Prep",
 ];
 
 export function useRecipeCategories() {

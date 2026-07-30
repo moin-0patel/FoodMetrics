@@ -10,7 +10,10 @@ services:
   - type: web
     # Keep this name stable: it determines the <name>.onrender.com hostname, so
     # renaming it creates a NEW service on a new URL and orphans the old one.
-    name: recipe-costing-system
+    # If a service already holds this hostname, Render appends a suffix
+    # (foodmetrics-5pon.onrender.com) — so delete the old service BEFORE applying
+    # this blueprint if you want the clean name.
+    name: foodmetrics
     runtime: static
     # --include=dev because `npm run build` runs tsc AND vite, both of which live
     # in devDependencies. If Render sets NODE_ENV=production, a plain `npm ci`

@@ -32,6 +32,7 @@ export const supabasePackagingRepo = {
         packaging_type: input.packaging_type || "primary",
         unit: input.unit || "Piece",
         unit_price: input.unit_price ?? null,
+        image_url: input.image_url ?? null,
         status: input.status ?? "active",
         notes: input.notes ?? null,
         created_by: actorId,
@@ -67,6 +68,7 @@ export const supabasePackagingRepo = {
       updated_by: actorId,
       updated_at: nowISO(),
     };
+    if (input.image_url !== undefined) patch.image_url = input.image_url;
     if (input.status) patch.status = input.status;
     const { data, error } = await sb().from("packaging_items").update(patch).eq("id", id).select("*").single();
     if (error) {

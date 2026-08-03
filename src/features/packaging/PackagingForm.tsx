@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Loader2 } from "lucide-react";
+import { Loader2, Trash2, Upload } from "lucide-react";
 import { useUnsavedChanges, useFormDirty } from "@/lib/hooks/useUnsavedChanges";
 import { UnsavedChangesDialog } from "@/components/UnsavedChangesDialog";
 import {
@@ -31,6 +31,7 @@ const EMPTY: PackagingItemValues = {
   unit: "Piece",
   unit_price: undefined as unknown as number,
   status: "active",
+  image_url: "",
   notes: "",
 };
 
@@ -63,6 +64,7 @@ export function PackagingForm({
             unit: item.unit,
             unit_price: item.unit_price ?? (undefined as unknown as number),
             status: item.status,
+            image_url: item.image_url ?? "",
             notes: item.notes ?? "",
           }
         : EMPTY,
@@ -78,6 +80,7 @@ export function PackagingForm({
       unit: values.unit,
       unit_price: values.unit_price ?? null,
       status: values.status,
+      image_url: values.image_url || null,
       notes: values.notes || null,
     };
     try {
@@ -147,6 +150,83 @@ export function PackagingForm({
               placeholder="0.00"
             />
             {formState.errors.unit_price && <p className="text-xs text-destructive">{formState.errors.unit_price.message}</p>}
+          </div>
+
+          <div className="space-y-1.5">
+            <Label>Packaging Photo</Label>
+            <div className="space-y-2">
+              {watch("image_url") ? (
+                <div className="relative flex items-center gap-3 rounded-lg border p-2 bg-muted/30">
+                  <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-md border bg-background">
+                    <img
+                      src={watch("image_url")}
+                      alt="Packaging Preview"
+                      className="h-full w-full object-cover"
+                    />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-xs font-medium truncate text-foreground">Photo Attached</p>
+                    <p className="text-[11px] text-muted-foreground truncate">
+                      {watch("image_url")?.startsWith("data:") ? "Uploaded from device" : watch("image_url")}
+                    </p>
+                  </div>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    className="h-8 text-xs text-destructive hover:bg-destructive/10"
+                    onClick={() => setValue("image_url", "", { shouldDirty: true })}
+                  >
+                    <Trash2 className="mr-1 h-3.5 w-3.5" />
+                    Remove
+                  </Button>
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 gap-2">
+                  <label
+                    htmlFor="packaging-photo-upload"
+                    className="flex cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-muted-foreground/25 p-4 text-center transition-colors hover:border-primary hover:bg-muted/40"
+                  >
+                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 text-primary mb-2">
+                      <Upload className="h-5 w-5" />
+                    </div>
+                    <span className="text-xs font-semibold text-foreground">Click to upload photo</span>
+                    <span className="text-[11px] text-muted-foreground">PNG, JPG, WEBP, SVG up to 3MB</span>
+                    <input
+                      id="packaging-photo-upload"
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (!file) return;
+                        if (file.size > 3_000_000) {
+                          toast.error("File too large", "Please select an image under 3 MB.");
+                          return;
+                        }
+                        const reader = new FileReader();
+                        reader.onload = () => {
+                          setValue("image_url", reader.result as string, { shouldDirty: true });
+                        };
+                        reader.readAsDataURL(file);
+                        e.target.value = "";
+                      }}
+                    />
+                  </label>
+
+                  <div className="flex items-center gap-2 pt-1">
+                    <Input
+                      {...register("image_url")}
+                      placeholder="Or paste image URL (https://...)"
+                      className="h-8 text-xs"
+                    />
+                  </div>
+                </div>
+              )}
+            </div>
+            {formState.errors.image_url && (
+              <p className="text-xs text-destructive">{formState.errors.image_url.message}</p>
+            )}
           </div>
 
           <div className="space-y-1.5">

@@ -196,6 +196,7 @@ export const packagingItemSchema = z.object({
     .refine((v) => Number(v.toFixed(2)) === v, "Use at most two decimal places")
     .nullish(),
   status: z.enum(["active", "inactive"]).optional(),
+  image_url: z.string().optional().or(z.literal("")),
   notes: z.string().optional().or(z.literal("")),
 });
 export type PackagingItemValues = z.infer<typeof packagingItemSchema>;

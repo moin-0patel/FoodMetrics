@@ -12,6 +12,7 @@ export interface PackagingInput {
   unit: string;
   unit_price: number | null;
   status?: MaterialStatus;
+  image_url?: string | null;
   notes?: string | null;
 }
 
@@ -41,6 +42,7 @@ export const packagingRepo = {
           packaging_type: input.packaging_type || "primary",
           unit: input.unit || "Piece",
           unit_price: input.unit_price ?? null,
+          image_url: input.image_url ?? null,
           status: input.status ?? "active",
           notes: input.notes ?? null,
           created_by: actorId,
@@ -79,6 +81,7 @@ export const packagingRepo = {
         item.packaging_type = input.packaging_type || item.packaging_type;
         item.unit = input.unit || item.unit;
         item.unit_price = input.unit_price ?? null;
+        if (input.image_url !== undefined) item.image_url = input.image_url;
         if (input.status) item.status = input.status;
         item.notes = input.notes ?? null;
         item.updated_by = actorId;

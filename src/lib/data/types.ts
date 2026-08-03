@@ -296,6 +296,8 @@ export interface PackagingItem {
   packaging_type: string;
   unit: string;
   unit_price: number | null;
+  /** Photo URL for the packaging item. */
+  image_url?: string | null;
   status: MaterialStatus;
   notes: string | null;
   created_by: string | null;

@@ -40,16 +40,20 @@ export function PackagingCard({
 
   return (
     <div className="group flex flex-col overflow-hidden rounded-xl border bg-card transition-all hover:-translate-y-0.5 hover:shadow-lg">
-      {/* Typed plate + short id, standing in for a product photo. */}
+      {/* Photo or fallback icon plate. */}
       <div className="relative flex aspect-[16/9] items-center justify-center bg-muted">
-        <span
-          className={cn(
-            "flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br ring-1 ring-inset ring-black/5",
-            TYPE_PLATE[item.packaging_type] ?? "from-muted to-muted text-muted-foreground",
-          )}
-        >
-          {TYPE_ICON[item.packaging_type] ?? <Package className="h-7 w-7" />}
-        </span>
+        {item.image_url ? (
+          <img src={item.image_url} alt={item.name} className="absolute inset-0 h-full w-full object-cover" />
+        ) : (
+          <span
+            className={cn(
+              "flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br ring-1 ring-inset ring-black/5",
+              TYPE_PLATE[item.packaging_type] ?? "from-muted to-muted text-muted-foreground",
+            )}
+          >
+            {TYPE_ICON[item.packaging_type] ?? <Package className="h-7 w-7" />}
+          </span>
+        )}
         <span className="absolute right-3 top-3 rounded bg-background/85 px-2 py-0.5 font-mono text-[10px] font-semibold uppercase tracking-wide text-muted-foreground ring-1 ring-inset ring-border">
           {item.id.slice(0, 8)}
         </span>

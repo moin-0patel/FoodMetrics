@@ -52,16 +52,17 @@ create policy recipe_packaging_write on public.recipe_packaging
   for all to authenticated using (public.is_app_admin()) with check (public.is_app_admin());
 
 -- Seed the standard packaging master items (idempotent by normalized_name).
-insert into public.packaging_items (name, normalized_name, packaging_type, unit, unit_price)
+insert into public.packaging_items (name, normalized_name, packaging_type, unit, unit_price, image_url)
 values
-  ('Pizza Box',   'pizza box',   'primary',   'Piece', 4.50),
-  ('Burger Box',  'burger box',  'primary',   'Piece', 3.50),
-  ('Paper Bag',   'paper bag',   'secondary', 'Piece', 2.00),
-  ('Sauce Cup',   'sauce cup',   'primary',   'Piece', 1.50),
-  ('Dessert Box', 'dessert box', 'primary',   'Piece', 5.00),
-  ('Cup',         'cup',         'primary',   'Piece', 2.50),
-  ('Lid',         'lid',         'primary',   'Piece', 1.00),
-  ('Sticker',     'sticker',     'tertiary',  'Piece', 0.50),
-  ('Fork',        'fork',        'secondary', 'Piece', 0.80),
-  ('Spoon',       'spoon',       'secondary', 'Piece', 0.80)
-on conflict (normalized_name) do nothing;
+  ('Pizza Box',   'pizza box',   'primary',   'Piece', 4.50, '/demo/photos/pizza-box.jpg'),
+  ('Burger Box',  'burger box',  'primary',   'Piece', 3.50, '/demo/photos/burger-box.jpg'),
+  ('Paper Bag',   'paper bag',   'secondary', 'Piece', 2.00, '/demo/photos/paper-bag.jpg'),
+  ('Sauce Cup',   'sauce cup',   'primary',   'Piece', 1.50, '/demo/photos/sauce-cup.jpg'),
+  ('Dessert Box', 'dessert box', 'primary',   'Piece', 5.00, '/demo/photos/dessert-box.jpg'),
+  ('Cup',         'cup',         'primary',   'Piece', 2.50, '/demo/photos/cup.jpg'),
+  ('Lid',         'lid',         'primary',   'Piece', 1.00, '/demo/photos/cup.jpg'),
+  ('Sticker',     'sticker',     'tertiary',  'Piece', 0.50, '/demo/photos/paper-bag.jpg'),
+  ('Fork',        'fork',        'secondary', 'Piece', 0.80, '/demo/photos/burger-box.jpg'),
+  ('Spoon',       'spoon',       'secondary', 'Piece', 0.80, '/demo/photos/burger-box.jpg')
+on conflict (normalized_name) do update set
+  image_url = excluded.image_url;
